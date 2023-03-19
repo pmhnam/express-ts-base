@@ -1,0 +1,9 @@
+node_modules
+package-lock.json
+.env
+dist
+*.exe
+client.test.html
+src/**/logs/*
+coverage
+database.sqlite3

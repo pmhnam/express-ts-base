@@ -1,0 +1,12 @@
+{
+    "success": "Thành công",
+    "notFound": "Không tìm thấy",
+    "internalServerError": "Đã xảy ra lỗi",
+    "auth": {
+        "loginFailed": "Email, tên đăng nhập hoặc mật khẩu sai",
+        "userNotFound": "Không tìm thấy người dùng",
+        "otpNotMatch": "OTP không đúng",
+        "otpExpired": "OTP đã hết hạn",
+        "userExisted": "Email hoặc tên đăng nhập đã được sử dụng"
+    }
+}
