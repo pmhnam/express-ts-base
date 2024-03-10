@@ -5,6 +5,7 @@ export interface ICoreDto {
   page?: string;
   limit?: string;
   offset?: string;
+  embed?: string;
   [key: string]: any;
 }
 
@@ -20,4 +21,8 @@ export interface IGetSearchQueryDto {
 
 export interface IGetSortQueryDto {
   sort: string;
+}
+
+export interface IGetEmbedQueryDto {
+  embed: string;
 }

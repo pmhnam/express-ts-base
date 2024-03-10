@@ -1,25 +1,32 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Op } from 'sequelize';
-import { ICoreDto, IGetPaginationDto, IGetSearchQueryDto, IGetSortQueryDto } from './core.interface';
+import { Model, ModelStatic, Op } from 'sequelize';
+import { ICoreDto, IGetEmbedQueryDto, IGetPaginationDto, IGetSearchQueryDto, IGetSortQueryDto } from './core.interface';
 
 enum QUERY_PREFIX {
   FILTER = 'f_',
 }
+interface IQueryInclude {
+  model: ModelStatic<Model<any, any>>;
+  as: string;
+  attributes: string[];
+  required?: boolean;
+}
 
-abstract class RESTFulService {
+abstract class CoreService {
   protected abstract params: {
     searchFields: string[];
     sortFields: string[];
     filterFields: string[];
     dateScope: string[];
-    embed: string[];
+    embed: { [key: string]: { model: ModelStatic<Model<any, any>>; as: string; attributes: string[] } };
   };
 
   // USING SEQUELIZE QUERY
   protected getParams(dto: ICoreDto) {
-    const { search, sort, page: _page, limit: _limit, offset: _offset, ...restDto } = dto;
+    const { search, sort, page: _page, limit: _limit, offset: _offset, embed, ...restDto } = dto;
 
     const queryParams: Record<string | symbol, any> = {
       where: {},
@@ -43,6 +50,10 @@ abstract class RESTFulService {
 
     if (sort && sort.length) {
       queryParams.order = this.getSortQuery({ sort });
+    }
+
+    if (embed) {
+      queryParams.include = this.getEmbedQuery({ embed });
     }
 
     if (Object.keys(restDto).length) {
@@ -114,7 +125,7 @@ abstract class RESTFulService {
 
     // please keep this order keys of symbolsConfig
     const symbolsConfig = {
-      and: '%',
+      and: '&',
       or: '|',
       gte: '>=',
       lte: '<=',
@@ -123,12 +134,12 @@ abstract class RESTFulService {
       ne: '!=',
     };
     const sOp: Record<keyof typeof symbolsConfig, symbol> = {
-      gt: Op.gt,
-      gte: Op.gte,
-      lt: Op.lt,
-      lte: Op.lte,
       and: Op.and,
       or: Op.or,
+      gte: Op.gte,
+      lte: Op.lte,
+      gt: Op.gt,
+      lt: Op.lt,
       ne: Op.ne,
     };
 
@@ -152,7 +163,8 @@ abstract class RESTFulService {
         // check logic for gt, gte, lt, lte
         // eg: f_user.balance = '>1000'
         // eg: f_user.balance = '<=200'
-        const [opKey, opValue] = Object.values(symbolsConfig).find((symbol) => rawValue.includes(symbol)) || [];
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [opKey, opValue] = Object.entries(symbolsConfig).find(([_, symbol]) => rawValue.includes(symbol)) || [];
 
         if (opKey && opValue) {
           const value = rawValue.split(opValue)[1]; // get the value after the symbol
@@ -165,6 +177,35 @@ abstract class RESTFulService {
     });
 
     return filterQuery;
+  }
+
+  private getEmbedQuery({ embed }: IGetEmbedQueryDto) {
+    if (!embed) return null;
+
+    const embedKeys = embed.split('|');
+    const result: IQueryInclude[] = [];
+
+    for (const key of embedKeys) {
+      const [modelKey, fieldKey] = key.split('.');
+      const includeInfo = this.params.embed[modelKey];
+
+      if (includeInfo) {
+        const { model, as } = includeInfo;
+        const existingInclude = result.find((i) => i.as === as);
+        if (existingInclude) {
+          existingInclude.attributes.push(fieldKey);
+        } else {
+          result.push({
+            model,
+            as,
+            attributes: [fieldKey],
+            required: false,
+          });
+        }
+      }
+    }
+
+    return result;
   }
 
   private formatValue(value: any) {
@@ -184,4 +225,4 @@ abstract class RESTFulService {
   }
 }
 
-export default RESTFulService;
+export default CoreService;
