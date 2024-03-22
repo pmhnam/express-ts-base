@@ -1,2 +1,1 @@
-export * from './mongoose';
-export * from './init.sequelize';
+export * from './postgresql';

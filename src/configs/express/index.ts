@@ -11,8 +11,8 @@ import ResponseHandler from '../middlewares/response.middleware';
 import { errorHandler, notFoundHandler } from '../middlewares/error.middleware';
 import { apiLimiter } from '../rateLimit';
 import { accessLogsMiddleware } from '../middlewares/morgan.middleware';
-import { db } from '../database';
 import i18nMiddleware from '../i18n';
+import { connectDB } from '../database';
 
 config();
 
@@ -35,7 +35,7 @@ class App {
 
   public listen(callback?: () => void) {
     return this.app.listen(this.PORT, async () => {
-      await db.sequelize.sync({ alter: true });
+      await connectDB();
       console.log(`> Server started on port ${this.PORT}`);
       if (callback) callback();
     });

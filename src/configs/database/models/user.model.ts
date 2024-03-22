@@ -1,7 +1,7 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic } from 'sequelize';
 import { ACCOUNT_STATUS } from '@src/utils/constants/enum';
 import bcrypt from 'bcryptjs';
-import { db } from '../init.sequelize';
+import { db } from '../index';
 
 export interface IUserModel
   extends Model<InferAttributes<IUserModel, { omit: 'createdAt' | 'updatedAt' }>, InferCreationAttributes<IUserModel>> {

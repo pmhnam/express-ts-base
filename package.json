@@ -32,7 +32,6 @@
     "ioredis": "^5.2.4",
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.30.1",
-    "mongoose": "^6.9.0",
     "morgan": "^1.10.0",
     "otp-generator": "^4.0.1",
     "pg": "^8.11.3",
