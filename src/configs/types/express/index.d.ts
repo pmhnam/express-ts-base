@@ -12,9 +12,12 @@ declare global {
       };
       user?: {
         id: string;
-        email: string;
-        role: string;
+        email?: string;
+        username?: string;
+        role?: string;
+        [key: string]: unknown;
       };
+      requestId?: string;
     }
   }
 }

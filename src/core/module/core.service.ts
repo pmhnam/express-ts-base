@@ -3,6 +3,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Model, ModelStatic, Op } from 'sequelize';
+import { ICoreQueryParams } from '@src/utils/constants/interface';
 import { ICoreDto, IGetEmbedQueryDto, IGetPaginationDto, IGetSearchQueryDto, IGetSortQueryDto } from './core.interface';
 
 enum QUERY_PREFIX {
@@ -16,13 +17,7 @@ interface IQueryInclude {
 }
 
 abstract class CoreService {
-  protected abstract params: {
-    searchFields: string[];
-    sortFields: string[];
-    filterFields: string[];
-    dateScope: string[];
-    embed: { [key: string]: { model: ModelStatic<Model<any, any>>; as: string; attributes: string[] } };
-  };
+  protected abstract params: ICoreQueryParams;
 
   // USING SEQUELIZE QUERY
   protected getParams(dto: ICoreDto) {

@@ -1,2 +1,2 @@
 export * from './mongoose';
-export * from './sequelize';
+export * from './init.sequelize';

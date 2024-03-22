@@ -1,8 +1,9 @@
+import { IOptionsLoggerDto } from '../logger';
 import { HTTPException } from './httpException';
 
 export class UnauthorizedHTTP extends HTTPException {
-  constructor(message = 'Unauthorized') {
-    super(message, 401);
-    this.name = 'HTTPUnauthorized';
+  constructor(message = 'Unauthorized', opts?: IOptionsLoggerDto) {
+    super(message, 401, opts);
+    this.name = 'Unauthorized';
   }
 }

@@ -30,7 +30,7 @@ class SocketServer extends SKServer {
   private auth = (socket: ISocket, next: (err?: ExtendedError) => void) => {
     const { token } = socket.handshake.auth;
     if (token) {
-      const { user_id } = jwt.verify(token) as { user_id: string };
+      const { user_id } = jwt.verifyAccessToken(token) as { user_id: string };
       if (user_id) {
         socket.user_id = user_id;
         next();

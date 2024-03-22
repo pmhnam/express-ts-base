@@ -1,8 +1,9 @@
+import { IOptionsLoggerDto } from '../logger';
 import { HTTPException } from './httpException';
 
-export class NotFound extends HTTPException {
-  constructor(message = 'Not Found') {
-    super(message, 404);
+export class NotFoundHTTP extends HTTPException {
+  constructor(message = 'Not Found', opts?: IOptionsLoggerDto) {
+    super(message, 404, opts);
     this.name = 'HTTPNotFoundException';
   }
 }

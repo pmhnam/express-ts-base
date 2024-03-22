@@ -1,0 +1,13 @@
+{
+    "success": "Success",
+    "notFound": "Not found",
+    "internalServerError": "Internal Server Error",
+    "auth": {
+        "loginFailed": "Wrong email, username or password",
+        "userNotFound": "User not found",
+        "otpNotMatch": "OTP not match",
+        "otpExpired": "OTP expired",
+        "userExisted": "Email or username has already been used.",
+        "invalidToken": "Invalid token"
+    }
+}

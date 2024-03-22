@@ -1,29 +1,53 @@
 import { NextFunction, Request, Response } from 'express';
-import messageQueue from '@src/configs/queue';
-import { QUEUE_SEND_MESSAGE } from '@src/configs/queue/channels';
-import AuthService from './auth.service';
-import AuthValidate from './auth.validate';
+import authService from './auth.service';
 
-export default class AuthController {
-  private readonly authService: AuthService;
+class AuthController {
+  private readonly authService;
 
-  constructor(authService: AuthService) {
+  constructor() {
     this.authService = authService;
   }
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const payload = AuthValidate.PostRegister(req);
-      const user = await this.authService.register(payload);
-      // gửi OTP
-      await messageQueue.sendToQueue(QUEUE_SEND_MESSAGE, user);
-      res.status(201).json({
-        message: 'User created successfully',
-        data: user,
-      });
-      return;
+      const dto = req.body;
+      const user = await this.authService.register(dto);
+      // TODO: send email
+      res.onSuccess(user);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = req.body;
+      const data = await this.authService.login(dto);
+      res.onSuccess(data);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = req.body;
+      const data = await this.authService.forgotPassword(dto);
+      // TODO: send email
+      res.onSuccess(data);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data = await this.authService.resetPassword(req);
+      res.onSuccess(data);
     } catch (error) {
       next(error);
     }
   };
 }
+
+export default new AuthController();

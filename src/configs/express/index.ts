@@ -11,6 +11,8 @@ import ResponseHandler from '../middlewares/response.middleware';
 import { errorHandler, notFoundHandler } from '../middlewares/error.middleware';
 import { apiLimiter } from '../rateLimit';
 import { accessLogsMiddleware } from '../middlewares/morgan.middleware';
+import { db } from '../database';
+import i18nMiddleware from '../i18n';
 
 config();
 
@@ -32,7 +34,8 @@ class App {
   }
 
   public listen(callback?: () => void) {
-    return this.app.listen(this.PORT, () => {
+    return this.app.listen(this.PORT, async () => {
+      await db.sequelize.sync({ alter: true });
       console.log(`> Server started on port ${this.PORT}`);
       if (callback) callback();
     });
@@ -50,6 +53,7 @@ class App {
     this.app.use(helmet());
     this.app.use(apiLimiter);
     this.app.use(express.json({ limit: '10mb' }), express.urlencoded({ limit: '10mb', extended: true }));
+    this.app.use(i18nMiddleware);
     this.app.use(ResponseHandler.middlewareResponse);
   }
 
@@ -59,7 +63,7 @@ class App {
       res.status(200).json({ message: 'Express with typescript code base server' });
     });
 
-    // this.app.use('/api/v1', routerV1);
+    this.app.use('/api/v1', routerV1);
     this.app.use(errorHandler);
     this.app.use('*', notFoundHandler);
   }
