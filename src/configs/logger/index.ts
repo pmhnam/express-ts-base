@@ -10,9 +10,12 @@ export interface IOptionsLoggerDto {
 class AppLogger {
   public logger: Logger;
   constructor() {
-    const formatPrint = format.printf(({ level, message, context, timestamp, metadata, requestId }) => {
-      const jsonMetadata = metadata ? `:: ${JSON.stringify(metadata)}` : '';
-      return `${timestamp} :: ${level} :: ${message} :: ${context} :: ${requestId} ${jsonMetadata}`;
+    const formatPrint = format.printf(({ level, message, context = '', timestamp, metadata, requestId = '' }) => {
+      const jsonMetadata = metadata ? ` :: ${JSON.stringify(metadata)}` : '';
+      const reqId = requestId ? ` :: ${requestId}` : '';
+      const ctx = context ? ` :: ${context}` : '';
+
+      return `${timestamp} :: ${level} :: ${message}${ctx}${reqId}${jsonMetadata}`;
     });
 
     const httpFormatPrint = format.printf(({ level, message, timestamp, metadata }) => {
