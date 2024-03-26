@@ -26,3 +26,11 @@ export interface IGetSortQueryDto {
 export interface IGetEmbedQueryDto {
   embed: string;
 }
+
+export interface IMetadata {
+  page: number;
+  limit?: number;
+  totalPages: number;
+  totalCount?: number;
+  hasNextPage: boolean;
+}

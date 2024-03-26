@@ -4,7 +4,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Model, ModelStatic, Op } from 'sequelize';
 import { ICoreQueryParams } from '@src/utils/constants/interface';
-import { ICoreDto, IGetEmbedQueryDto, IGetPaginationDto, IGetSearchQueryDto, IGetSortQueryDto } from './core.interface';
+import {
+  ICoreDto,
+  IGetEmbedQueryDto,
+  IGetPaginationDto,
+  IGetSearchQueryDto,
+  IGetSortQueryDto,
+  IMetadata,
+} from './core.interface';
 
 enum QUERY_PREFIX {
   FILTER = 'f_',
@@ -18,10 +25,18 @@ interface IQueryInclude {
 
 abstract class CoreService {
   protected abstract params: ICoreQueryParams;
+  protected metadata: IMetadata = {
+    page: 1,
+    limit: undefined,
+    totalPages: 1,
+    totalCount: undefined,
+    hasNextPage: false,
+  };
 
   // USING SEQUELIZE QUERY
   protected getParams(dto: ICoreDto) {
     const { search, sort, page: _page, limit: _limit, offset: _offset, embed, ...restDto } = dto;
+    console.log(dto);
 
     const queryParams: Record<string | symbol, any> = {
       where: {},
@@ -29,7 +44,7 @@ abstract class CoreService {
       offset: 0,
     };
 
-    const { limit, offset } = this.getPagination({
+    const { limit, offset, page } = this.getPagination({
       limit: _limit,
       offset: _offset,
       page: _page,
@@ -37,10 +52,12 @@ abstract class CoreService {
     if (limit) {
       queryParams.limit = limit;
       queryParams.offset = offset;
+      this.metadata.limit = limit;
+      this.metadata.page = page;
     }
 
     if (search) {
-      queryParams.where = { ...queryParams.where, [Op.and]: this.getSearchQuery({ search }) };
+      queryParams.where = { ...queryParams.where, [Op.or]: this.getSearchQuery({ search }) };
     }
 
     if (sort && sort.length) {
@@ -217,6 +234,16 @@ abstract class CoreService {
       return `$${key}$`;
     }
     return key;
+  }
+
+  protected getMetadata(totalCount: number) {
+    const { limit, page } = this.metadata;
+    if (!limit) return { ...this.metadata, totalCount };
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+
+    return { ...this.metadata, totalCount, totalPages, hasNextPage };
   }
 }
 

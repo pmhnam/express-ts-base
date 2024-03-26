@@ -1,4 +1,4 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { ACCOUNT_STATUS } from '@src/utils/constants/enum';
 import bcrypt from 'bcryptjs';
 import { db } from '../index';
