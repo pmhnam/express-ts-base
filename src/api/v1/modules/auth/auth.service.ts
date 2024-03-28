@@ -30,86 +30,69 @@ class AuthService extends CoreService {
   }
 
   register = async (dto: ICreateUserDto) => {
-    try {
-      const { username = '', email = '' } = dto;
+    const { username = '', email = '' } = dto;
 
-      const existedUser = await this.userModel.findOne({
-        where: { [Op.or]: [{ username }, { email }] },
-      });
-      if (existedUser) throw new BadRequestHTTP(i18nKey.auth.userExisted);
+    const existedUser = await this.userModel.findOne({
+      where: { [Op.or]: [{ username }, { email }] },
+    });
+    if (existedUser) throw new BadRequestHTTP(i18nKey.auth.userExisted);
 
-      const user = await this.userModel.create(dto);
-      return user;
-    } catch (error) {
-      console.error('> AuthService.register: ', error);
-      throw error;
-    }
+    const user = await this.userModel.create(dto);
+    const tokenPayload = { id: user.id, email: user.email, username: user.username };
+    const tokens = jwt.sign(tokenPayload);
+
+    return { user, tokens };
   };
 
   login = async (dto: ILoginDto) => {
-    try {
-      const { username = '', email = '', password } = dto;
+    const { username = '', email = '', password } = dto;
 
-      const user = await this.userModel.findOne({
-        where: { [Op.or]: [{ username }, { email }] },
-        attributes: ['id', 'email', 'username', 'first_name', 'last_name', 'password'],
-      });
-      if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
+    const user = await this.userModel.findOne({
+      where: { [Op.or]: [{ username }, { email }] },
+      attributes: ['id', 'email', 'username', 'first_name', 'last_name', 'password'],
+    });
+    if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
 
-      const { password: pws, ...restUser } = user.toJSON();
+    const { password: pws, ...restUser } = user.toJSON();
 
-      const isMatch = bcrypt.compareSync(password, pws);
-      if (!isMatch) throw new BadRequestHTTP(i18nKey.auth.loginFailed);
+    const isMatch = bcrypt.compareSync(password, pws);
+    if (!isMatch) throw new BadRequestHTTP(i18nKey.auth.loginFailed);
 
-      const tokenPayload = { id: user.id, email: user.email, username: user.username };
-      const tokens = jwt.sign(tokenPayload);
-      // TODO: Save refresh token
+    const tokenPayload = { id: user.id, email: user.email, username: user.username };
+    const tokens = jwt.sign(tokenPayload);
+    // TODO: Save refresh token
 
-      return { user: restUser, tokens };
-    } catch (error) {
-      console.error('> AuthService.login: ', error);
-      throw error;
-    }
+    return { user: restUser, tokens };
   };
 
   forgotPassword = async (dto: IForgotPasswordDto) => {
-    try {
-      const { email = '', username = '' } = dto;
-      const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
-      if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
+    const { email = '', username = '' } = dto;
+    const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
+    if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
 
-      const otp = generateOTP();
-      const expireMinutes = Number(process.env.OTP_EXPIRES_TIME || 5);
-      const expires = moment().add(expireMinutes, 'minutes').toDate();
+    const otp = generateOTP();
+    const expireMinutes = Number(process.env.OTP_EXPIRES_TIME || 5);
+    const expires = moment().add(expireMinutes, 'minutes').toDate();
 
-      await this.setForgotPasswordData(user.id, { otp, expires });
+    await this.setForgotPasswordData(user.id, { otp, expires });
 
-      return { otp, expires, email };
-    } catch (error) {
-      console.error('> AuthService.forgotPassword: ', error);
-      throw error;
-    }
+    return { otp, expires, email };
   };
 
   resetPassword = async (req: Request) => {
-    try {
-      const { username = '', email = '', otp, newPassword } = req.body;
+    const { username = '', email = '', otp, newPassword } = req.body;
 
-      const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
-      if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
+    const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
+    if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
 
-      this.compareOtp(user, otp);
-      await this.setResetPasswordData(user.id, { password: newPassword });
+    this.compareOtp(user, otp);
+    await this.setResetPasswordData(user.id, { password: newPassword });
 
-      return true;
-    } catch (error) {
-      console.error('> AuthService.resetPassword: ', error);
-      throw error;
-    }
+    return true;
   };
 
   private compareOtp(user: IUserModel, otp: string) {
-    if (!user.reset_password) throw new NotFoundHTTP(i18nKey.auth.otpNotMatch);
+    if (!user.reset_password) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);
 
     const isMatchOtp = user.forgot_password_code === otp;
     if (!isMatchOtp) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);

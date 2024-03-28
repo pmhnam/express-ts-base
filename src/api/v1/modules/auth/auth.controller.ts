@@ -11,9 +11,9 @@ class AuthController {
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const dto = req.body;
-      const user = await this.authService.register(dto);
+      const data = await this.authService.register(dto);
       // TODO: send email
-      res.onSuccess(user);
+      res.onSuccess(data, { code: 201 });
     } catch (error) {
       next(error);
     }
