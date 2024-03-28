@@ -1,4 +1,4 @@
-import { CustomSuccess } from '@src/api/v2/middlewares';
+import { CustomSuccess } from '@src/configs/middlewares/response.middleware';
 
 declare global {
   namespace Express {

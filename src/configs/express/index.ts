@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import compression from 'compression';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -12,7 +12,6 @@ import { errorHandler, notFoundHandler } from '../middlewares/error.middleware';
 import { apiLimiter } from '../rateLimit';
 import { accessLogsMiddleware } from '../middlewares/morgan.middleware';
 import i18nMiddleware from '../i18n';
-import { connectDB } from '../database';
 
 config();
 
@@ -22,51 +21,29 @@ enum NODE_ENV {
   TEST = 'test',
 }
 
-class App {
-  public app: Application;
-  public NODE_ENV: string = process.env.NODE_ENV || NODE_ENV.DEVELOPMENT;
-  public PORT = process.env.PORT || 3000;
+const app = express();
 
-  constructor() {
-    this.app = express();
-    this.initConfig();
-    this.initRoutes();
-  }
-
-  public listen(callback?: () => void) {
-    return this.app.listen(this.PORT, async () => {
-      await connectDB();
-      console.log(`> Server started on port ${this.PORT}`);
-      if (callback) callback();
-    });
-  }
-
-  private initConfig() {
-    if (this.NODE_ENV === NODE_ENV.DEVELOPMENT) {
-      this.app.use(morgan('dev'));
-    } else {
-      this.app.use(accessLogsMiddleware);
-    }
-    this.app.disable('x-powered-by');
-    this.app.use(compression());
-    this.app.use(cors(corsOptions));
-    this.app.use(helmet());
-    this.app.use(apiLimiter);
-    this.app.use(express.json({ limit: '10mb' }), express.urlencoded({ limit: '10mb', extended: true }));
-    this.app.use(i18nMiddleware);
-    this.app.use(ResponseHandler.middlewareResponse);
-  }
-
-  private initRoutes() {
-    this.app.use('/static', express.static(path.join(__dirname, 'public'))); // serve static files
-    this.app.get('/', (req: Request, res: Response) => {
-      res.status(200).json({ message: 'Express with typescript code base server' });
-    });
-
-    this.app.use('/api/v1', routerV1);
-    this.app.use(errorHandler);
-    this.app.use('*', notFoundHandler);
-  }
+if (process.env.NODE_ENV === NODE_ENV.DEVELOPMENT) {
+  app.use(morgan('dev'));
+} else {
+  app.use(accessLogsMiddleware);
 }
+app.disable('x-powered-by');
+app.use(compression());
+app.use(cors(corsOptions));
+app.use(helmet());
+app.use(apiLimiter);
+app.use(express.json({ limit: '10mb' }), express.urlencoded({ limit: '10mb', extended: true }));
+app.use(i18nMiddleware);
+app.use(ResponseHandler.middlewareResponse);
 
-export default new App();
+app.use('/static', express.static(path.join(__dirname, 'public'))); // serve static files
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({ message: 'Express with typescript code base server' });
+});
+
+app.use('/api/v1', routerV1);
+app.use(errorHandler);
+app.use('*', notFoundHandler);
+
+export default app;
