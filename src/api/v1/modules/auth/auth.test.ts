@@ -1,15 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
-import { db } from '@src/configs/database';
+import { syncDatabase, db } from '@src/configs/database';
 import app from '../../../../configs/express/index';
 
 const req = request(app);
-/** !IMPORTANT: DATABASE SYNC
- *  Connect and sync database before testing */
+
+/** !IMPORTANT: Need to sync database before test */
 beforeAll(async () => {
-  await db.sequelize.authenticate();
-  await db.sequelize.sync({ alter: true });
+  await syncDatabase();
 });
 
 afterAll(async () => {
