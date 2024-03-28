@@ -5,7 +5,7 @@
     "auth": {
         "loginFailed": "Wrong email, username or password",
         "userNotFound": "User not found",
-        "otpNotMatch": "OTP not match",
+        "otpNotMatch": "Invalid OTP code",
         "otpExpired": "OTP expired",
         "userExisted": "Email or username has already been used.",
         "invalidToken": "Invalid token"
