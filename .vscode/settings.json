@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "flushall",
+    "requirepass",
     "sadd",
     "scard",
     "smembers",

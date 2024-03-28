@@ -12,28 +12,51 @@ Copy `.env.example` file to `.env` file
 
 ## Running the app
 
-### Development
+Please prepare `postgresql` and `redis` database before running the app
+
+#### Install postgresql via docker
+
+```
+docker run --name postgresql-codebase -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=postgres -p 5432:5432 -d postgres
+```
+
+#### Install redis via docker
+
+```
+docker run -d --name redis-codebase -p 6379:6379 redis redis-server --requirepass SecureRedisPassportNotForSharing
+```
+
+### Development environment
 
 ```
 npm run dev
 ```
 
-### Production
+### Production environment
 
 ```
 npm start
 ```
 
+### Testing
+
+```
+npm run test
+```
+
+## Features
+
 - Handler return error ✔️
 - Validate REST request ✔️
-- Rate limits REST API
-- Logs requests
-- Limit records
-- AWS ✔️
+- Rate limits REST API ✔️
+- Logs requests ✔️
+- Limit records ✔️
+- AWS S3 ✔️
 - Redis ✔️
 - Socket (IO Socket) ✔️
 - Stripe ✔️
-- I18n
+- I18n ✔️
+- Unit testing ✔️
 - Swagger
 
 ## Convention
@@ -70,7 +93,9 @@ Pagination:
 - `page`: Default is `1`
 
 ```
+
 GET /stores?page=1&limit=10
+
 ```
 
 Sort:
@@ -78,7 +103,9 @@ Sort:
 > Note: `-` is `DESC`
 
 ```
+
 GET /stores?sort=-createdAt
+
 ```
 
 Filter: The prefix `f_` is used to filter.
@@ -94,14 +121,19 @@ Filter: The prefix `f_` is used to filter.
 - `!=` as `NOT EQUALS`
 
 ```
+
 # This is equivalent to `?f_cuisine=1|2&f_forAge=>=18`
+
 GET /stores?f_cuisine=1%7C2&f_forAge=%3E%3D18
+
 ```
 
 Search:
 
 ```
+
 GET /stores?search=landmark81
+
 ```
 
 ## Batch Delete
@@ -114,11 +146,13 @@ GET /stores?search=landmark81
 - We use a custom `POST` methods to achieve a batch delete functionality:
 
 ```
+
 POST /stores/batch_delete
 
 BODY: {
-    ids: ["id_1", "id_2"]
+ids: ["id_1", "id_2"]
 }
+
 ```
 
 ## Auto loading related resource representations (TODO)
@@ -128,7 +162,9 @@ There are many cases where an API consumer needs to load data related to (or ref
 In this case, embed would be a separated list of fields to be embedded. Dot-notation could be used to refer to sub-fields.
 
 ```
+
 GET /stores/12?embed=lead.name|assigned_user
+
 ```
 
 ## Return something useful from POST, PATCH & PUT requests
@@ -220,4 +256,8 @@ pm2 start ./dist/main.js --name foody-api
 
 ```bash
 pm2 restart foody-api
+```
+
+```
+
 ```
