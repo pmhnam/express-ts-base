@@ -36,7 +36,6 @@ abstract class CoreService {
   // USING SEQUELIZE QUERY
   protected getParams(dto: ICoreDto) {
     const { search, sort, page: _page, limit: _limit, offset: _offset, embed, ...restDto } = dto;
-    console.log(dto);
 
     const queryParams: Record<string | symbol, any> = {
       where: {},

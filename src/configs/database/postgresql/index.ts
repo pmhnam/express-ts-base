@@ -39,6 +39,4 @@ export const syncDatabase = async () => {
   }
 };
 
-export const db = {
-  sequelize,
-};
+export default sequelize;

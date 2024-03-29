@@ -29,7 +29,7 @@ class AuthService extends CoreService {
     super();
   }
 
-  register = async (dto: ICreateUserDto) => {
+  async register(dto: ICreateUserDto) {
     const { username = '', email = '' } = dto;
 
     const existedUser = await this.userModel.findOne({
@@ -42,9 +42,9 @@ class AuthService extends CoreService {
     const tokens = jwt.sign(tokenPayload);
 
     return { user, tokens };
-  };
+  }
 
-  login = async (dto: ILoginDto) => {
+  async login(dto: ILoginDto) {
     const { username = '', email = '', password } = dto;
 
     const user = await this.userModel.findOne({
@@ -63,9 +63,9 @@ class AuthService extends CoreService {
     // TODO: Save refresh token
 
     return { user: restUser, tokens };
-  };
+  }
 
-  forgotPassword = async (dto: IForgotPasswordDto) => {
+  async forgotPassword(dto: IForgotPasswordDto) {
     const { email = '', username = '' } = dto;
     const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
     if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
@@ -77,9 +77,9 @@ class AuthService extends CoreService {
     await this.setForgotPasswordData(user.id, { otp, expires });
 
     return { otp, expires, email };
-  };
+  }
 
-  resetPassword = async (req: Request) => {
+  async resetPassword(req: Request) {
     const { username = '', email = '', otp, newPassword } = req.body;
 
     const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
@@ -89,7 +89,7 @@ class AuthService extends CoreService {
     await this.setResetPasswordData(user.id, { password: newPassword });
 
     return true;
-  };
+  }
 
   private compareOtp(user: IUserModel, otp: string) {
     if (!user.reset_password) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);
