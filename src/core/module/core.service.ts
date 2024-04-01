@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Model, ModelStatic, Op } from 'sequelize';
 import { ICoreQueryParams } from '@src/utils/constants/interface';
+import { db } from '@src/configs/database';
 import {
   ICoreDto,
   IGetEmbedQueryDto,
@@ -25,6 +26,7 @@ interface IQueryInclude {
 
 abstract class CoreService {
   protected abstract params: ICoreQueryParams;
+  protected sequelize = db.sequelize;
   protected metadata: IMetadata = {
     page: 1,
     limit: undefined,
@@ -243,6 +245,10 @@ abstract class CoreService {
     const hasNextPage = page < totalPages;
 
     return { ...this.metadata, totalCount, totalPages, hasNextPage };
+  }
+
+  protected getTransaction() {
+    return this.sequelize.transaction();
   }
 }
 

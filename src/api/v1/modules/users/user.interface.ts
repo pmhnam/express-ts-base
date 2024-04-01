@@ -18,4 +18,6 @@ export interface IUpdateUserDto {
   enabled_2fa?: boolean;
   secret_2fa?: string;
   status?: ACCOUNT_STATUS;
+
+  updatedBy: string;
 }

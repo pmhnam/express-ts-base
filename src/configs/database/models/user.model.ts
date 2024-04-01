@@ -26,6 +26,9 @@ export interface IUserModel
   secret_2fa?: CreationOptional<string>;
   status?: CreationOptional<ACCOUNT_STATUS>;
 
+  updatedBy?: string;
+  deletedBy?: string;
+
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
   deletedAt?: CreationOptional<Date>;

@@ -23,7 +23,7 @@ docker run --name postgresql-codebase -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=
 #### Install redis via docker
 
 ```
-docker run -d --name redis-codebase -p 6379:6379 redis redis-server --requirepass SecureRedisPassportNotForSharing
+docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 ### Development environment

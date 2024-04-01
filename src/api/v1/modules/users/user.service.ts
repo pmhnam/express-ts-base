@@ -2,7 +2,9 @@ import UserModel from '@src/configs/database/models/user.model';
 import CoreService from '@src/core/module/core.service';
 import { ICoreQueryParams } from '@src/utils/constants/interface';
 import { Request } from 'express';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
+import { NotFoundHTTP } from '@src/configs/httpException';
+import { i18nKey } from '@src/configs/i18n/init.i18n';
 import { IUpdateUserDto } from './user.interface';
 
 class UserService extends CoreService {
@@ -20,8 +22,8 @@ class UserService extends CoreService {
     this.userModel = UserModel;
   }
 
-  async getUserById(id: string) {
-    return await this.userModel.findByPk(id, {
+  async getUserById(id: string, transaction?: Transaction) {
+    const user = await this.userModel.findByPk(id, {
       attributes: {
         exclude: [
           'password',
@@ -34,13 +36,15 @@ class UserService extends CoreService {
           'deletedAt',
         ],
       },
+      transaction,
     });
+    if (!user) throw new NotFoundHTTP(i18nKey.users.userNotFound);
+
+    return user;
   }
 
   async updateUserById(id: string, dto: IUpdateUserDto) {
-    const user = await this.getUserById(id);
-    if (!user) throw new Error('User not found');
-
+    await this.getUserById(id);
     return await this.userModel.update(dto, { where: { id } });
   }
 
@@ -67,16 +71,33 @@ class UserService extends CoreService {
     return { users, metadata };
   }
 
-  async deleteUserById(id: string) {
-    const user = await this.getUserById(id);
-    if (!user) throw new Error('User not found');
-    return await user.destroy();
+  async deleteUserById(id: string, deletedBy: string) {
+    const transaction = await this.getTransaction();
+    try {
+      const user = await this.getUserById(id);
+      await this.userModel.update({ deletedBy }, { where: { id }, transaction });
+      await user.destroy({ transaction });
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 
-  async deleteUsersByIds(ids: string[]) {
-    const users = await this.userModel.findAll({ where: { id: { [Op.in]: ids } } });
-    if (users.length !== ids.length) throw new Error('User not found');
-    return await this.userModel.destroy({ where: { id: { [Op.in]: ids } } });
+  async deleteUsersByIds(ids: string[], deletedBy: string) {
+    const transaction = await this.getTransaction();
+    try {
+      const users = await this.userModel.findAll({ where: { id: { [Op.in]: ids } }, transaction });
+      if (users.length !== ids.length) throw new Error('User not found');
+      await this.userModel.update({ deletedBy }, { where: { id: { [Op.in]: ids } }, transaction });
+      await this.userModel.destroy({ where: { id: { [Op.in]: ids } }, transaction });
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 }
 

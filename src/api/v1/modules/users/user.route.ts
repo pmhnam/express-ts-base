@@ -6,15 +6,15 @@ import { UserController } from './user.controller';
 import { getUserByIdDto, getUsersValidatorDto, putUserByIdDto } from './user.validate';
 
 const userRouter = Router();
-const userController = new UserController();
+const userCtl = new UserController();
 
+userRouter.get('/me', auth, userCtl.getMyProfile);
 userRouter
   .route('/:id')
-  .get(validate(getUserByIdDto), userController.getUserById)
-  .put(validate(putUserByIdDto), userController.updateUserById);
-userRouter.get('/me/profile', auth, userController.getMyProfile);
-userRouter.get('/', validate(getUsersValidatorDto), userController.getUsers);
-userRouter.delete('/:id', auth, userController.deleteUserById);
-userRouter.delete('/', auth, userController.deleteUsersByIds);
+  .get(validate(getUserByIdDto), userCtl.cacheMiddleware, userCtl.getUserById)
+  .put(auth, validate(putUserByIdDto), userCtl.updateUserById)
+  .delete(auth, validate(putUserByIdDto), userCtl.deleteUserById);
+userRouter.get('/', validate(getUsersValidatorDto), userCtl.cacheMiddleware, userCtl.getUsers);
+userRouter.delete('/', auth, userCtl.deleteUsersByIds);
 
 export default userRouter;
