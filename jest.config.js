@@ -12,4 +12,5 @@ module.exports = {
     "^@aws$": "<rootDir>/src/configs/aws",
     "^@apiV1/(.*)$": "<rootDir>/src/api/v1/$1"
   },
+  setupFilesAfterEnv: ['<rootDir>/src/test/jest.setup.ts'],
 };

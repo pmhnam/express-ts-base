@@ -9,7 +9,7 @@
     "start": "npm run build && node -r ts-node/register dist/server.js",
     "dev": "nodemon src/server.ts",
     "build": "rm -rf dist && npx tsc",
-    "test": "NODE_ENV=test npx jest --runInBand --detectOpenHandles"
+    "test": "NODE_ENV=test npx jest --runInBand --verbose --detectOpenHandles --testRegex"
   },
   "keywords": [],
   "author": "",

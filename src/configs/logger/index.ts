@@ -1,5 +1,8 @@
+import { config } from 'dotenv';
 import { Logger, createLogger, format, transports } from 'winston';
 import 'winston-daily-rotate-file';
+
+config();
 
 export interface IOptionsLoggerDto {
   metadata?: Record<string, unknown>;
@@ -9,6 +12,8 @@ export interface IOptionsLoggerDto {
 
 class AppLogger {
   public logger: Logger;
+  private testMode = process.env.NODE_ENV === 'test';
+
   constructor() {
     const formatPrint = format.printf(({ level, message, context = '', timestamp, metadata, requestId = '' }) => {
       const jsonMetadata = metadata ? ` :: ${JSON.stringify(metadata)}` : '';
@@ -26,7 +31,7 @@ class AppLogger {
     this.logger = createLogger({
       format: format.combine(format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss Z' }), formatPrint),
       transports: [
-        new transports.Console(),
+        ...(this.testMode ? [new transports.Console()] : []),
         new transports.DailyRotateFile({
           dirname: 'src/logs/info',
           filename: 'app-%DATE%.log',

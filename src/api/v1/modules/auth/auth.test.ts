@@ -1,19 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
-import { syncDatabase, db } from '@src/configs/database';
+import { describe, expect, test } from '@jest/globals';
 import app from '../../../../configs/express/index';
 
 const req = request(app);
-
-/** !IMPORTANT: Need to sync database before test */
-beforeAll(async () => {
-  await syncDatabase();
-});
-
-afterAll(async () => {
-  await db.sequelize.close();
-});
 
 describe('AUTH MODULE', () => {
   describe('Register API', () => {
@@ -172,6 +162,29 @@ describe('AUTH MODULE', () => {
       const res = await req.post('/api/v1/auth/reset-password').send(dto);
 
       expect(res.status).toEqual(404);
+    });
+  });
+
+  describe('Refresh token API', () => {
+    test('should refresh token', async () => {
+      const registerDto = {
+        username: 'test-refresh',
+        email: 'test-refresh@local.com',
+        password: 'test1234',
+        rePassword: 'test1234',
+        first_name: 'test',
+        last_name: 'test',
+      };
+
+      const registerRes = await req.post('/api/v1/auth/register').send(registerDto);
+      expect(registerRes.status).toEqual(201);
+      const { refreshToken } = registerRes.body.data.tokens;
+
+      const dto = { refreshToken };
+      const res = await req.post('/api/v1/auth/refresh-access-token').send(dto);
+
+      expect(res.status).toEqual(200);
+      expect(typeof res.body.data).toEqual('string');
     });
   });
 });

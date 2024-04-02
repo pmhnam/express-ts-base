@@ -113,7 +113,15 @@ const UserModel = db.sequelize.define<IUserModel>(
       },
     },
   },
-  { paranoid: true, timestamps: true }
+  {
+    paranoid: true,
+    timestamps: true,
+    indexes: [
+      { unique: true, fields: ['id'] },
+      { unique: true, fields: ['email'] },
+      { unique: true, fields: ['username'] },
+    ],
+  }
 );
 
 const hashPassword = async (user: IUserModel) => {
@@ -128,5 +136,9 @@ const hashPassword = async (user: IUserModel) => {
 // Hash password
 UserModel.beforeCreate(hashPassword);
 UserModel.beforeUpdate(hashPassword);
+
+(async () => {
+  await UserModel.sync();
+})();
 
 export default UserModel;
