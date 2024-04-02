@@ -37,3 +37,9 @@ export const resetPasswordValidatorDto: schema = {
     otp: Joi.string().min(6).required(),
   }).or('username', 'email'),
 };
+
+export const refreshTokenValidatorDto: schema = {
+  body: Joi.object({
+    refreshToken: Joi.string().required(),
+  }),
+};

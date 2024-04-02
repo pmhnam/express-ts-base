@@ -10,7 +10,8 @@ import moment from 'moment';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
 import UserModel, { IUserModel } from '@src/configs/database/models/user.model';
 import { Op } from 'sequelize';
-import jwt from '../../utils/jwt';
+import { getCache } from '@src/configs/database/redis/cache';
+import jwt, { IJwtPayload } from '../../utils/jwt';
 import { generateOTP } from '../../utils/functions';
 import { ICreateUserDto, IForgotPasswordDto, ILoginDto } from './auth.interface';
 
@@ -91,6 +92,20 @@ class AuthService extends CoreService {
     return true;
   }
 
+  async refreshAccessToken(refreshToken: string) {
+    const payload = jwt.verifyRefreshToken(refreshToken) as IJwtPayload;
+    const redisSessionKey = `session:${payload.id}`;
+    const session = await getCache(redisSessionKey);
+    if (!session) throw new BadRequestHTTP(i18nKey.auth.tokenExpired);
+    const user = await this.userModel.findOne({ where: { id: payload.id } });
+    if (!user) throw new BadRequestHTTP(i18nKey.auth.invalidToken);
+
+    const tokenPayload = { id: user.id, email: user.email, username: user.username };
+    const accessToken = jwt.signAccessToken(tokenPayload);
+    return accessToken;
+  }
+
+  // #region private methods
   private compareOtp(user: IUserModel, otp: string) {
     if (!user.reset_password) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);
 
@@ -125,6 +140,8 @@ class AuthService extends CoreService {
       { where: { id: userId } }
     );
   }
+
+  // #endregion
 }
 
 export default new AuthService();

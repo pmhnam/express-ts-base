@@ -48,6 +48,15 @@ class AuthController {
       next(error);
     }
   };
+
+  refreshAccessToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data = await this.authService.refreshAccessToken(req.body.refreshToken);
+      res.onSuccess(data);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new AuthController();

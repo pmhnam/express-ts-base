@@ -2,6 +2,7 @@ import { sign, verify, Secret, VerifyOptions } from 'jsonwebtoken';
 import { config } from 'dotenv';
 import { UnauthorizedHTTP } from '@src/configs/httpException';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
+import { setCache } from '@src/configs/database/redis/cache';
 
 config();
 
@@ -19,9 +20,21 @@ export class JWT {
   private readonly refreshExpiresTime: number = Number(process.env.JWT_REFRESH_EXPIRES_TIME) || 7 * 24 * 60 * 60;
 
   public sign(payload: IJwtPayload) {
-    const accessToken = sign(payload, this.accessSecretKey, { expiresIn: this.accessExpiresTime });
-    const refreshToken = sign(payload, this.refreshSecretKey, { expiresIn: this.refreshExpiresTime });
+    const redisSessionKey = `session:${payload.id}`;
+    const accessToken = this.signAccessToken(payload);
+    const refreshToken = this.signRefreshToken(payload);
+    setCache(redisSessionKey, { id: payload.id, refreshToken }, this.refreshExpiresTime);
     return { accessToken, refreshToken };
+  }
+
+  signAccessToken(payload: IJwtPayload) {
+    const accessToken = sign(payload, this.accessSecretKey, { expiresIn: this.accessExpiresTime });
+    return accessToken;
+  }
+
+  signRefreshToken(payload: IJwtPayload) {
+    const refreshToken = sign(payload, this.refreshSecretKey, { expiresIn: this.refreshExpiresTime });
+    return refreshToken;
   }
 
   public verifyAccessToken(token: string, options?: VerifyOptions) {
