@@ -8,9 +8,10 @@ import { BadRequestHTTP, NotFoundHTTP } from '@src/configs/httpException';
 import bcrypt from 'bcryptjs';
 import moment from 'moment';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
-import UserModel, { IUserModel } from '@src/configs/database/models/user.model';
+import { IUserModel } from '@src/configs/database/models/user.model';
 import { Op } from 'sequelize';
 import { getCache } from '@src/configs/database/redis/cache';
+import { UserModel } from '@src/configs/database/models';
 import jwt, { IJwtPayload } from '../../utils/jwt';
 import { generateOTP } from '../../utils/functions';
 import { ICreateUserDto, IForgotPasswordDto, ILoginDto } from './auth.interface';
@@ -50,7 +51,7 @@ class AuthService extends CoreService {
 
     const user = await this.userModel.findOne({
       where: { [Op.or]: [{ username }, { email }] },
-      attributes: ['id', 'email', 'username', 'first_name', 'last_name', 'password'],
+      attributes: ['id', 'email', 'username', 'firstName', 'lastName', 'password'],
     });
     if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
 
@@ -107,12 +108,12 @@ class AuthService extends CoreService {
 
   // #region private methods
   private compareOtp(user: IUserModel, otp: string) {
-    if (!user.reset_password) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);
+    if (!user.resetPassword) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);
 
-    const isMatchOtp = user.forgot_password_code === otp;
+    const isMatchOtp = user.forgotPasswordCode === otp;
     if (!isMatchOtp) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);
 
-    const expireDate = user.forgot_password_code_expires && moment(user.forgot_password_code_expires);
+    const expireDate = user.forgotPasswordCodeExpires && moment(user.forgotPasswordCodeExpires);
     if (!expireDate || moment().isAfter(expireDate)) throw new BadRequestHTTP(i18nKey.auth.otpExpired);
 
     return true;
@@ -121,9 +122,9 @@ class AuthService extends CoreService {
   private async setForgotPasswordData(userId: string, { otp, expires }: { otp: string; expires: Date }) {
     return await this.userModel.update(
       {
-        forgot_password_code: otp,
-        forgot_password_code_expires: expires,
-        reset_password: true,
+        forgotPasswordCode: otp,
+        forgotPasswordCodeExpires: expires,
+        resetPassword: true,
       },
       { where: { id: userId } }
     );
@@ -132,9 +133,9 @@ class AuthService extends CoreService {
   private async setResetPasswordData(userId: string, { password }: { password: string }) {
     return await this.userModel.update(
       {
-        forgot_password_code: undefined,
-        forgot_password_code_expires: undefined,
-        reset_password: false,
+        forgotPasswordCode: undefined,
+        forgotPasswordCodeExpires: undefined,
+        resetPassword: false,
         password,
       },
       { where: { id: userId } }

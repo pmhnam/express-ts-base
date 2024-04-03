@@ -12,8 +12,8 @@ async function createSeedUsers() {
     email: '',
     password: 'password',
     rePassword: 'password',
-    first_name: 'first',
-    last_name: 'last',
+    firstName: 'first',
+    lastName: 'last',
   };
   let i = 1;
 

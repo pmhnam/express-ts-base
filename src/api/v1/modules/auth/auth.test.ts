@@ -12,8 +12,8 @@ describe('AUTH MODULE', () => {
       email: 'test@local.com',
       password: 'test1234',
       rePassword: 'test1234',
-      first_name: 'test',
-      last_name: 'test',
+      firstName: 'test',
+      lastName: 'test',
     };
 
     test('should return JWT tokens upon successful registration', async () => {
@@ -172,8 +172,8 @@ describe('AUTH MODULE', () => {
         email: 'test-refresh@local.com',
         password: 'test1234',
         rePassword: 'test1234',
-        first_name: 'test',
-        last_name: 'test',
+        firstName: 'test',
+        lastName: 'test',
       };
 
       const registerRes = await req.post('/api/v1/auth/register').send(registerDto);

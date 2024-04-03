@@ -8,22 +8,22 @@ export interface IUserModel
   id: CreationOptional<string>;
   username: string;
   email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   password: string;
-  full_name?: string;
+  fullName?: string;
 
-  email_verified?: CreationOptional<boolean>;
-  country_code?: CreationOptional<string>;
-  phone_number?: CreationOptional<string>;
-  phone_number_verified?: CreationOptional<boolean>;
+  emailVerified?: CreationOptional<boolean>;
+  countryCode?: CreationOptional<string>;
+  phoneNumber?: CreationOptional<string>;
+  phoneNumberVerified?: CreationOptional<boolean>;
   otp?: CreationOptional<string>;
-  otp_expires?: CreationOptional<Date | string>;
-  forgot_password_code?: CreationOptional<string>;
-  forgot_password_code_expires?: CreationOptional<Date | string>;
-  reset_password?: CreationOptional<boolean>;
-  enabled_2fa?: CreationOptional<boolean>;
-  secret_2fa?: CreationOptional<string>;
+  otpExpires?: CreationOptional<Date | string>;
+  forgotPasswordCode?: CreationOptional<string>;
+  forgotPasswordCodeExpires?: CreationOptional<Date | string>;
+  resetPassword?: CreationOptional<boolean>;
+  enabled2fa?: CreationOptional<boolean>;
+  secret2fa?: CreationOptional<string>;
   status?: CreationOptional<ACCOUNT_STATUS>;
 
   updatedBy?: string;
@@ -34,8 +34,8 @@ export interface IUserModel
   deletedAt?: CreationOptional<Date>;
 }
 
-const UserModel = db.sequelize.define<IUserModel>(
-  'Users',
+export const UserModel = db.sequelize.define<IUserModel>(
+  'users',
   {
     id: {
       type: DataTypes.UUID,
@@ -48,11 +48,11 @@ const UserModel = db.sequelize.define<IUserModel>(
       unique: true,
       allowNull: false,
     },
-    first_name: {
+    firstName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    last_name: {
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -61,17 +61,17 @@ const UserModel = db.sequelize.define<IUserModel>(
       unique: true,
       allowNull: false,
     },
-    email_verified: {
+    emailVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    country_code: {
+    countryCode: {
       type: DataTypes.STRING,
     },
-    phone_number: {
+    phoneNumber: {
       type: DataTypes.STRING,
     },
-    phone_number_verified: {
+    phoneNumberVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
@@ -81,24 +81,24 @@ const UserModel = db.sequelize.define<IUserModel>(
     otp: {
       type: DataTypes.STRING,
     },
-    otp_expires: {
+    otpExpires: {
       type: DataTypes.DATE,
     },
-    forgot_password_code: {
+    forgotPasswordCode: {
       type: DataTypes.STRING,
     },
-    forgot_password_code_expires: {
+    forgotPasswordCodeExpires: {
       type: DataTypes.DATE,
     },
-    reset_password: {
+    resetPassword: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    enabled_2fa: {
+    enabled2fa: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    secret_2fa: {
+    secret2fa: {
       type: DataTypes.STRING,
     },
     status: {
@@ -106,10 +106,10 @@ const UserModel = db.sequelize.define<IUserModel>(
       defaultValue: ACCOUNT_STATUS.INACTIVE,
     },
 
-    full_name: {
+    fullName: {
       type: DataTypes.VIRTUAL,
       get() {
-        return `${this.first_name} ${this.last_name}`;
+        return `${this.firstName} ${this.lastName}`;
       },
     },
   },
@@ -136,9 +136,3 @@ const hashPassword = async (user: IUserModel) => {
 // Hash password
 UserModel.beforeCreate(hashPassword);
 UserModel.beforeUpdate(hashPassword);
-
-(async () => {
-  await UserModel.sync();
-})();
-
-export default UserModel;

@@ -1,18 +1,18 @@
-import UserModel from '@src/configs/database/models/user.model';
 import CoreService from '@src/core/module/core.service';
 import { ICoreQueryParams } from '@src/utils/constants/interface';
 import { Request } from 'express';
 import { Op, Transaction } from 'sequelize';
 import { NotFoundHTTP } from '@src/configs/httpException';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
+import { UserModel } from '@src/configs/database/models';
 import { IUpdateUserDto } from './user.interface';
 
 class UserService extends CoreService {
   private readonly userModel;
   protected params: ICoreQueryParams = {
     searchFields: ['username', 'email'],
-    sortFields: ['username', 'email', 'first_name', 'last_name', 'created_at', 'updated_at'],
-    filterFields: ['username', 'email', 'first_name', 'last_name'],
+    sortFields: ['username', 'email', 'firstName', 'lastName', 'createdAt', 'updatedAt'],
+    filterFields: ['username', 'email', 'firstName', 'lastName'],
     dateScope: [],
     embed: {},
   };
@@ -28,11 +28,11 @@ class UserService extends CoreService {
         exclude: [
           'password',
           'otp',
-          'otp_expires',
-          'forgot_password_code',
-          'forgot_password_code_expires',
-          'reset_password',
-          'secret_2fa',
+          'otpExpires',
+          'forgotPasswordCode',
+          'forgotPasswordCodeExpires',
+          'resetPassword',
+          'secret2fa',
           'deletedAt',
         ],
       },
@@ -57,11 +57,11 @@ class UserService extends CoreService {
         exclude: [
           'password',
           'otp',
-          'otp_expires',
-          'forgot_password_code',
-          'forgot_password_code_expires',
-          'reset_password',
-          'secret_2fa',
+          'otpExpires',
+          'forgotPasswordCode',
+          'forgotPasswordCodeExpires',
+          'resetPassword',
+          'secret2fa',
           'deletedAt',
         ],
       },

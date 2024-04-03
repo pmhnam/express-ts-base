@@ -16,8 +16,8 @@ export const registerValidatorDto: schema = {
     rePassword: Joi.string().required().valid(Joi.ref('password')).label('repeat password').messages({
       'any.only': '{{#label}} does not match',
     }),
-    first_name: Joi.string().min(1).max(32).required().label('first name'),
-    last_name: Joi.string().min(1).max(32).required().label('last name'),
+    firstName: Joi.string().min(1).max(32).required().label('first name'),
+    lastName: Joi.string().min(1).max(32).required().label('last name'),
   }),
 };
 
