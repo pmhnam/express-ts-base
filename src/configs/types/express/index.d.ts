@@ -5,7 +5,7 @@ declare global {
     export interface Response {
       onSuccess: (data: unknown, custom?: CustomSuccess) => unknown;
     }
-    export interface Request {
+    interface Request extends Request {
       rawBody?: string;
       locals: {
         isAuth?: boolean;

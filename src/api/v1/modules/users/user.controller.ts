@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { CoreController } from '@src/core/module/core.controller';
 import userService from './user.service';
+import { IJwtPayload } from '../../utils/jwt';
 
 export class UserController extends CoreController {
   private readonly userService = userService;
@@ -18,7 +19,8 @@ export class UserController extends CoreController {
 
   getMyProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.user?.id as string;
+      const { id } = <IJwtPayload>req.user;
+
       const data = await this.userService.getUserById(id);
       res.onSuccess(data);
     } catch (error) {
@@ -28,7 +30,7 @@ export class UserController extends CoreController {
 
   updateUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const updatedBy = req.user?.id as string;
+      const updatedBy = (<IJwtPayload>req.user).id;
       const { id } = req.params;
       const dto = req.body;
       const data = await this.userService.updateUserById(id, { ...dto, updatedBy });
@@ -51,7 +53,7 @@ export class UserController extends CoreController {
   deleteUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const deletedBy = req.user?.id as string;
+      const deletedBy = (<IJwtPayload>req.user).id;
       const data = await this.userService.deleteUserById(id, deletedBy);
       res.onSuccess(data);
     } catch (error) {
@@ -62,7 +64,7 @@ export class UserController extends CoreController {
   deleteUsersByIds = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { ids } = req.body;
-      const deletedBy = req.user?.id as string;
+      const deletedBy = (<IJwtPayload>req.user).id;
       const data = await this.userService.deleteUsersByIds(ids, deletedBy);
       res.onSuccess(data);
     } catch (error) {
