@@ -1,7 +1,8 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import { ACCOUNT_STATUS } from '@src/utils/constants/enum';
 import bcrypt from 'bcryptjs';
 import { db } from '../index';
+import { IRoleModel } from './role.model';
 
 export interface IUserModel
   extends Model<InferAttributes<IUserModel, { omit: 'createdAt' | 'updatedAt' }>, InferCreationAttributes<IUserModel>> {
@@ -11,6 +12,7 @@ export interface IUserModel
   firstName: string;
   lastName: string;
   password: string;
+  roleId: string;
   fullName?: string;
 
   emailVerified?: CreationOptional<boolean>;
@@ -32,6 +34,8 @@ export interface IUserModel
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
   deletedAt?: CreationOptional<Date>;
+
+  role?: NonAttribute<IRoleModel>;
 }
 
 export const UserModel = db.sequelize.define<IUserModel>(
@@ -77,6 +81,10 @@ export const UserModel = db.sequelize.define<IUserModel>(
     },
     password: {
       type: DataTypes.STRING,
+    },
+    roleId: {
+      type: DataTypes.UUID,
+      allowNull: false,
     },
     otp: {
       type: DataTypes.STRING,

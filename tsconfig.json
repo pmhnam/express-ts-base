@@ -27,7 +27,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "lib": ["es2022", "dom", "dom.iterable"] /* Specify library files to be included in the compilation. */,
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/configs/database/config.sequelize.js"],
   "exclude": ["node_modules", "dist"],
   "ts-node": { "require": ["tsconfig-paths/register"] }
 }

@@ -3,15 +3,15 @@ import { config } from 'dotenv';
 import { UnauthorizedHTTP } from '@src/configs/httpException';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
 import { setCache } from '@src/configs/database/redis/cache';
+import { IUserModel } from '@src/configs/database/models/user.model';
 
 config();
 
-export interface IJwtPayload {
-  id: string;
-  email: string;
-  role?: string;
-  [key: string]: any;
-}
+export interface IJwtPayload
+  extends Pick<
+    IUserModel,
+    'id' | 'username' | 'email' | 'firstName' | 'lastName' | 'phoneNumber' | 'status' | 'role'
+  > {}
 
 export class JWT {
   private readonly issuer = process.env.JWT_ISSUER || 'hnam.id.vn';

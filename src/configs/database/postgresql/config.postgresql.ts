@@ -1,7 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
+import { config } from 'dotenv';
 
-export const configDB = {
+config();
+
+export const postgresConfig = {
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'admin',
   database: process.env.DB_NAME || 'db_core',
@@ -10,10 +11,12 @@ export const configDB = {
   dialect: 'postgres',
   protocol: 'postgres',
   dialectOptions: {
-    // ssl: {
-    //   require: true,
-    //   rejectUnauthorized: false,
-    // },
+    ...(process.env.NODE_ENV === 'production' && {
+      ssl: { require: true },
+      connection: {
+        options: `project=${process.env.DB_ENDPOINT_ID}`,
+      },
+    }),
     useUTC: false,
     timezone: '+08:00',
   },
@@ -24,9 +27,5 @@ export const configDB = {
     acquire: 220000,
   },
   timezone: '+08:00',
-  seederStorage: 'sequelize',
-  seederStorageTableName: 'seeder',
-  migrationStorage: 'sequelize',
-  migrationStorageTableName: 'migration',
   logging: process.env.SHOW_QUERY_LOG === 'true',
 };

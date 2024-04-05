@@ -15,6 +15,7 @@ export const i18nKey = {
     missingToken: 'auth.missingToken',
     invalidTokenType: 'auth.invalidTokenType',
     tokenExpired: 'auth.tokenExpired',
+    notAllowed: 'auth.notAllowed',
   },
   users: {
     userNotFound: 'users.userNotFound',

@@ -1,28 +1,29 @@
-import { Sequelize, Dialect } from 'sequelize';
+import { Options, Sequelize } from 'sequelize';
 import { config } from 'dotenv';
 import { InternalServerHTTP } from '@src/configs/httpException';
 import logger from '@src/configs/logger';
-import { configDB } from './config.sequelize';
+import { NODE_ENV } from '@src/utils/constants/enum';
+import { postgresConfig } from './config.postgresql';
+import { sqliteConfig } from './config.sqlite';
 
 config();
 
-const TEST_MODE = process.env.NODE_ENV === 'test';
+const isTestMode = process.env.NODE_ENV === NODE_ENV.TEST;
 const DB_CONNECT_TIMEOUT = 10 * 1000;
 const DB_RECONNECT_TIMEOUT = 1 * 1000;
 let connectionTimeout: NodeJS.Timeout | null = null;
 let reconnectTimeout: NodeJS.Timeout | null = null;
 
-const postgresql = new Sequelize(configDB.database as string, configDB.username as string, configDB.password, {
-  ...configDB,
-  dialect: configDB.dialect as Dialect,
-});
-const sqlite = new Sequelize('sqlite::memory:', { logging: false });
-const sequelize = TEST_MODE ? sqlite : postgresql;
+const postgresql = new Sequelize(postgresConfig as Options);
+const sqlite = new Sequelize(sqliteConfig);
 
-export const syncDatabase = async () => {
+const sequelize = isTestMode ? sqlite : postgresql;
+
+export const syncDatabase = async (opts?: { force?: boolean }) => {
   try {
+    const { force = false } = opts || {};
     await sequelize.authenticate();
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ ...(force ? { force: true } : { alter: true }) });
     if (reconnectTimeout) clearTimeout(reconnectTimeout);
     if (connectionTimeout) clearTimeout(connectionTimeout);
     logger.log('DB connected');

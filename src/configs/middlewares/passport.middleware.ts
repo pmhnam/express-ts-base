@@ -3,6 +3,9 @@ import passport from 'passport';
 import { config } from 'dotenv';
 import { IJwtPayload } from '@src/api/v1/utils/jwt';
 import { Request } from 'express';
+import { RoleModel, UserModel } from '../database/models';
+import { UnauthorizedHTTP } from '../httpException';
+import { i18nKey } from '../i18n/init.i18n';
 
 config();
 
@@ -13,9 +16,19 @@ const jwtStrategy = new Strategy(
     issuer: process.env.JWT_ISSUER || 'hnam.id.vn',
     passReqToCallback: true,
   },
-  (req: Request, payload: IJwtPayload, done) => {
-    req.locals.isAuth = true;
-    return done(null, payload);
+  async (req: Request, payload: IJwtPayload, done) => {
+    req.locals = { ...req.locals, isAuth: true };
+    const user = await UserModel.findByPk(payload.id, {
+      attributes: ['id', 'username', 'email', 'firstName', 'lastName', 'phoneNumber', 'status'],
+      include: [
+        {
+          model: RoleModel,
+          as: 'role',
+        },
+      ],
+    });
+    if (!user) return done(new UnauthorizedHTTP(i18nKey.auth.userNotFound), false);
+    return done(null, user);
   }
 );
 

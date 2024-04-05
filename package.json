@@ -9,7 +9,9 @@
     "start": "npm run build && node -r ts-node/register dist/server.js",
     "dev": "nodemon src/server.ts",
     "build": "rm -rf dist && npx tsc",
-    "test": "NODE_ENV=test npx jest --runInBand --verbose --detectOpenHandles --testRegex"
+    "test": "NODE_ENV=test npx jest --runInBand --verbose --detectOpenHandles --testRegex",
+    "seed:up": "npx sequelize-cli db:seed:all",
+    "seed:down": "npx sequelize-cli db:seed:undo:all"
   },
   "keywords": [],
   "author": "",
