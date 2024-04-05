@@ -31,7 +31,7 @@ class AppLogger {
     this.logger = createLogger({
       format: format.combine(format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss Z' }), formatPrint),
       transports: [
-        ...(this.testMode ? [new transports.Console()] : []),
+        ...(this.testMode ? [] : [new transports.Console()]),
         new transports.DailyRotateFile({
           dirname: 'src/logs/info',
           filename: 'app-%DATE%.log',
