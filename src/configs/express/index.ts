@@ -7,19 +7,16 @@ import path from 'path';
 import routerV1 from '@apiV1/modules/index';
 import { corsOptions } from '@configs/cors';
 import { config } from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import { NODE_ENV } from '@src/utils/constants/enum';
 import ResponseHandler from '../middlewares/response.middleware';
 import { errorHandler, notFoundHandler } from '../middlewares/error.middleware';
 import { apiLimiter } from '../rateLimit';
 import { accessLogsMiddleware } from '../middlewares/morgan.middleware';
 import i18nMiddleware from '../i18n';
+import apiDocs from '../swagger/index.json';
 
 config();
-
-enum NODE_ENV {
-  DEVELOPMENT = 'development',
-  PRODUCTION = 'production',
-  TEST = 'test',
-}
 
 const app = express();
 
@@ -41,6 +38,8 @@ app.use('/static', express.static(path.join(__dirname, 'public'))); // serve sta
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ message: 'Express with typescript code base server' });
 });
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
 
 app.use('/api/v1', routerV1);
 app.use(errorHandler);
