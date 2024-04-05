@@ -998,36 +998,95 @@
           },
           "password": {
             "type": "string",
-            "example": "12345"
+            "example": "password"
           },
-          "phone": {
+          "roleId": {
             "type": "string",
-            "example": "12345"
+            "example": "2b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
           },
-          "userStatus": {
-            "type": "integer",
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "VN"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "+84 123456789"
+          },
+          "phoneNumberVerified": {
+            "type": "boolean"
+          },
+          "otp": {
+            "type": "string",
+            "example": "123456"
+          },
+          "otpExpires": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "forgotPasswordCode": {
+            "type": "string",
+            "example": "123456"
+          },
+          "forgotPasswordCodeExpires": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "resetPassword": {
+            "type": "boolean"
+          },
+          "enabled2fa": {
+            "type": "boolean"
+          },
+          "secret2fa": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
             "description": "User Status",
-            "format": "int32",
-            "example": 1
-          }
-        },
-        "xml": {
-          "name": "user"
-        }
-      },
-      "Tag": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
+            "enum": [
+              "active",
+              "inactive"
+            ]
           },
-          "name": {
+          "updatedBy": {
+            "type": "string"
+          },
+          "deletedBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "deletedAt": {
             "type": "string"
           }
         },
         "xml": {
-          "name": "tag"
+          "name": "users"
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "roles"
         }
       },
       "Pet": {
@@ -1087,16 +1146,10 @@
       "ApiResponse": {
         "type": "object",
         "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "type": {
-            "type": "string"
-          },
           "message": {
             "type": "string"
-          }
+          },
+          "data": {}
         },
         "xml": {
           "name": "##default"
