@@ -25,13 +25,13 @@ if (process.env.NODE_ENV === NODE_ENV.DEVELOPMENT) {
 } else {
   app.use(accessLogsMiddleware);
 }
+app.use(i18nMiddleware);
 app.disable('x-powered-by');
 app.use(compression());
 app.use(cors(corsOptions));
 app.use(helmet());
 app.use(apiLimiter);
 app.use(express.json({ limit: '10mb' }), express.urlencoded({ limit: '10mb', extended: true }));
-app.use(i18nMiddleware);
 app.use(ResponseHandler.middlewareResponse);
 
 app.use('/static', express.static(path.join(__dirname, 'public'))); // serve static files

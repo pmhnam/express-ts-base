@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-param-reassign */
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import { ACCOUNT_STATUS } from '@src/utils/constants/enum';
 import bcrypt from 'bcryptjs';
@@ -132,15 +134,23 @@ export const UserModel = db.sequelize.define<IUserModel>(
   }
 );
 
-const hashPassword = async (user: IUserModel) => {
-  if (user.password) {
-    const saltRounds = 10;
-    const hashPassword = await bcrypt.hash(user.password, saltRounds);
-    // eslint-disable-next-line no-param-reassign
-    user.password = hashPassword;
-  }
+const hashPassword = async (password: string) => {
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
 };
 
 // Hash password
-UserModel.beforeCreate(hashPassword);
-UserModel.beforeUpdate(hashPassword);
+UserModel.beforeCreate(async (user) => {
+  user.password = await hashPassword(user.password);
+});
+UserModel.beforeUpdate(async (user) => {
+  if (user.changed('password')) {
+    user.password = await hashPassword(user.password);
+  }
+});
+UserModel.beforeBulkUpdate(async (opt: any) => {
+  opt.attributes = opt.attributes || {};
+  if (opt.attributes?.password) {
+    opt.attributes.password = await hashPassword(opt.attributes.password);
+  }
+});

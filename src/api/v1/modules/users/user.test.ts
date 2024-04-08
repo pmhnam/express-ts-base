@@ -5,6 +5,18 @@ import { removeCache } from '@src/configs/database/redis/cache';
 import app from '../../../../configs/express/index';
 
 const req = request(app);
+let accessToken = '';
+
+async function adminLogin() {
+  const loginAdminDto = {
+    username: 'admin',
+    password: 'password',
+  };
+  const loginRes = await req.post('/api/v1/auth/login').send(loginAdminDto);
+  const { accessToken } = loginRes.body.data.tokens;
+
+  return accessToken;
+}
 
 async function createSeedUsers() {
   const user = {
@@ -31,14 +43,15 @@ async function createSeedUsers() {
 beforeAll(async () => {
   // create some users
   await createSeedUsers();
+  accessToken = await adminLogin();
 });
 
 describe('USER MODULE', () => {
-  describe('Get users API', () => {
+  describe('GET /api/v1/users', () => {
     test('should get all users', async () => {
       const url = '/api/v1/users';
       await removeCache(url);
-      const res = await req.get(url);
+      const res = await req.get(url).auth(accessToken, { type: 'bearer' });
 
       expect(res.status).toEqual(200);
       expect(Array.isArray(res.body.data)).toBeTruthy();
@@ -53,7 +66,7 @@ describe('USER MODULE', () => {
       };
       const url = `/api/v1/users?page=${query.page}&limit=${query.limit}`;
       await removeCache(url);
-      const res = await req.get(url);
+      const res = await req.get(url).auth(accessToken, { type: 'bearer' });
 
       expect(res.status).toEqual(200);
       expect(Array.isArray(res.body.data)).toBeTruthy();
@@ -68,22 +81,22 @@ describe('USER MODULE', () => {
       };
       const url = `/api/v1/users?f_username=${query.f_username}`;
       await removeCache(url);
-      const res = await req.get(url);
+      const res = await req.get(url).auth(accessToken, { type: 'bearer' });
 
       expect(res.status).toEqual(200);
       expect(Array.isArray(res.body.data)).toBeTruthy();
     });
   });
 
-  describe('Get user API', () => {
-    test('should get user by id', async () => {
+  describe('GET /api/v1/users/:id', () => {
+    test('should return user', async () => {
       const url = '/api/v1/users';
       await removeCache(url);
-      const resUsers = await req.get(url);
+      const resUsers = await req.get(url).auth(accessToken, { type: 'bearer' });
       expect(resUsers.status).toEqual(200);
 
       const user = resUsers.body.data[0];
-      const res = await req.get(`/api/v1/users/${user.id}`);
+      const res = await req.get(`/api/v1/users/${user.id}`).auth(accessToken, { type: 'bearer' });
 
       expect(res.status).toEqual(200);
       expect(res.body.data.id).toEqual(user.id);

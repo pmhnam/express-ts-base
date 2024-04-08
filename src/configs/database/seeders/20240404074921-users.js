@@ -8,7 +8,7 @@ module.exports = {
       email: 'hnam@duck.com',
       firstName: 'Nam',
       lastName: 'Hoang',
-      password: 'password',
+      password: '$2a$10$T9Tyue.pKPI4zyrjIGBpIO0iMJAyqeRWi6sU9n3nw7Bzc0AtmpGT2',
       roleId: '3ee2eb37-16a0-4cea-a3c3-b84d72d8ec8d', // get role admin
       status: 'active',
       createdAt: new Date(),

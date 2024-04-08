@@ -1,9 +1,14 @@
 {
   "cSpell.words": [
+    "DROPINDEX",
     "flushall",
+    "fuser",
+    "hnam",
+    "openapi",
     "requirepass",
     "sadd",
     "scard",
+    "sequelizerc",
     "smembers",
     "srem",
     "UUIDV"
