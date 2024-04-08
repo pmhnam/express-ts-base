@@ -3,7 +3,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Model, ModelStatic, Op } from 'sequelize';
-import { ICoreQueryParams } from '@src/utils/constants/interface';
 import { db } from '@src/configs/database';
 import {
   ICoreDto,
@@ -12,7 +11,8 @@ import {
   IGetSearchQueryDto,
   IGetSortQueryDto,
   IMetadata,
-} from './core.interface';
+  ICoreQueryParams,
+} from '@src/api/v1/utils/constants/interface';
 
 enum QUERY_PREFIX {
   FILTER = 'f_',

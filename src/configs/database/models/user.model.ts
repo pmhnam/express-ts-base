@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
-import { ACCOUNT_STATUS } from '@src/utils/constants/enum';
+import { ACCOUNT_STATUS } from '@src/api/v1/utils/constants/enum';
 import bcrypt from 'bcryptjs';
 import { db } from '../index';
 import { IRoleModel } from './role.model';

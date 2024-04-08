@@ -1,11 +1,11 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import passport from 'passport';
 import { config } from 'dotenv';
-import { IJwtPayload } from '@src/api/v1/utils/jwt';
 import { Request } from 'express';
 import { RoleModel, UserModel } from '../database/models';
 import { UnauthorizedHTTP } from '../httpException';
 import { i18nKey } from '../i18n/init.i18n';
+import { IJwtPayload } from '../jwt';
 
 config();
 

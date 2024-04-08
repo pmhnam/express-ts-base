@@ -1,5 +1,5 @@
-import { coreQueryDto } from '@src/core/module/core.validate';
 import { Joi } from 'express-validation';
+import { coreQueryDto } from '../../core/core.validate';
 
 export const joiUser = {
   id: Joi.string(),

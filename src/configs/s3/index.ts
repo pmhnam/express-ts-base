@@ -13,7 +13,7 @@ class UploadS3 {
     this.s3 = new AWS.S3();
   }
 
-  public async upload(type: string = 'image'): Promise<any> {
+  public async upload(type = 'image') {
     const key = `uploads/${type}/${uuidv4()}_`;
     const params = {
       Bucket: this.bucket_name,

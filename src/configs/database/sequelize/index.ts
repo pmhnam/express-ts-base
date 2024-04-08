@@ -2,7 +2,7 @@ import { Options, Sequelize } from 'sequelize';
 import { config } from 'dotenv';
 import { InternalServerHTTP } from '@src/configs/httpException';
 import logger from '@src/configs/logger';
-import { NODE_ENV } from '@src/utils/constants/enum';
+import { NODE_ENV } from '@src/api/v1/utils/constants/enum';
 import { postgresConfig } from './config.postgresql';
 import { sqliteConfig } from './config.sqlite';
 

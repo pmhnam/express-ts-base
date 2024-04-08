@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { IJwtPayload } from '@src/api/v1/utils/jwt';
-import { ROLE_CODES } from '@src/utils/constants/enum';
+import { ROLE_CODES } from '@src/api/v1/utils/constants/enum';
 import { i18nKey } from '../i18n/init.i18n';
 import { jwtAuth } from './passport.middleware';
+import { IJwtPayload } from '../jwt';
 
 export const authorization =
   (allowedRoles = Object.values(ROLE_CODES)) =>

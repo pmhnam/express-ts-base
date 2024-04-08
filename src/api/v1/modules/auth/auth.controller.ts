@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import authService from './auth.service';
+import { CoreController } from '../../core/core.controller';
 
-class AuthController {
+class AuthController extends CoreController {
   private readonly authService;
 
   constructor() {
+    super();
     this.authService = authService;
   }
 

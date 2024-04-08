@@ -53,7 +53,7 @@ export class JWT {
   }
   public verifyRefreshToken(token: string, options?: VerifyOptions) {
     try {
-      return verify(token, this.refreshSecretKey, { ...options, issuer: this.issuer });
+      return verify(token, this.refreshSecretKey, { ...options, issuer: this.issuer }) as IJwtPayload;
     } catch (error) {
       throw new UnauthorizedHTTP(i18nKey.auth.invalidToken, { context: 'verifyRefreshToken' });
     }

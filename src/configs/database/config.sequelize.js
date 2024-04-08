@@ -2,6 +2,7 @@
 require('dotenv').config();
 /** @type {import('sequelize').Options} */
 
+// just config for sequelize seeder
 const sequelizeConfig = {
   development: {
     username: process.env.DB_USERNAME || 'postgres',

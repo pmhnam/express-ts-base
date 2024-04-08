@@ -2,8 +2,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-useless-constructor */
 import { Request } from 'express';
-import CoreService from '@src/core/module/core.service';
-import { ICoreQueryParams } from '@src/utils/constants/interface';
+import { ICoreQueryParams } from '@src/api/v1/utils/constants/interface';
 import { BadRequestHTTP, InternalServerHTTP, NotFoundHTTP } from '@src/configs/httpException';
 import bcrypt from 'bcryptjs';
 import moment from 'moment';
@@ -12,10 +11,11 @@ import { IUserModel } from '@src/configs/database/models/user.model';
 import { Op } from 'sequelize';
 import { getCache } from '@src/configs/database/redis/cache';
 import { RoleModel, UserModel } from '@src/configs/database/models';
-import { ROLE_CODES } from '@src/utils/constants/enum';
-import jwt, { IJwtPayload } from '../../utils/jwt';
-import { generateOTP } from '../../utils/functions';
+import { ROLE_CODES } from '@src/api/v1/utils/constants/enum';
+import jwt from '@src/configs/jwt';
+import { generateOTP } from '@src/api/v1/utils/func';
 import { ICreateUserDto, IForgotPasswordDto, ILoginDto } from './auth.interface';
+import CoreService from '../../core/core.service';
 
 class AuthService extends CoreService {
   private readonly userModel = UserModel;
@@ -112,7 +112,7 @@ class AuthService extends CoreService {
   }
 
   async refreshAccessToken(refreshToken: string) {
-    const payload = jwt.verifyRefreshToken(refreshToken) as IJwtPayload;
+    const payload = jwt.verifyRefreshToken(refreshToken);
     const redisSessionKey = `session:${payload.id}`;
     const session = await getCache(redisSessionKey);
     if (!session) throw new BadRequestHTTP(i18nKey.auth.tokenExpired);

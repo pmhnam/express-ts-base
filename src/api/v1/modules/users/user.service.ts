@@ -1,11 +1,11 @@
-import CoreService from '@src/core/module/core.service';
-import { ICoreQueryParams } from '@src/utils/constants/interface';
+import { ICoreQueryParams } from '@src/api/v1/utils/constants/interface';
 import { Request } from 'express';
 import { Op, Transaction } from 'sequelize';
 import { NotFoundHTTP } from '@src/configs/httpException';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
 import { UserModel } from '@src/configs/database/models';
 import { IUpdateUserDto } from './user.interface';
+import CoreService from '../../core/core.service';
 
 class UserService extends CoreService {
   private readonly userModel;

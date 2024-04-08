@@ -8,13 +8,13 @@ import routerV1 from '@apiV1/modules/index';
 import { corsOptions } from '@configs/cors';
 import { config } from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
-import { NODE_ENV } from '@src/utils/constants/enum';
+import { NODE_ENV } from '@src/api/v1/utils/constants/enum';
+import apiDocs from '@configs/swagger/index.json';
 import ResponseHandler from '../middlewares/response.middleware';
 import { errorHandler, notFoundHandler } from '../middlewares/error.middleware';
 import { apiLimiter } from '../rateLimit';
 import { accessLogsMiddleware } from '../middlewares/morgan.middleware';
 import i18nMiddleware from '../i18n';
-import apiDocs from '../swagger/index.json';
 
 config();
 

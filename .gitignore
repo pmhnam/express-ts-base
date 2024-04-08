@@ -4,6 +4,6 @@ package-lock.json
 dist
 *.exe
 client.test.html
-src/logs/*
+src/**/logs/*
 coverage
 database.sqlite3

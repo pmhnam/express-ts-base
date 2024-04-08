@@ -5,14 +5,14 @@
 /* eslint-disable import/no-dynamic-require */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { afterAll, beforeAll } from '@jest/globals';
-import { db } from '@src/configs/database';
-import { syncDatabase } from '@src/configs/database/postgresql';
 import fs from 'fs';
 import path from 'path';
 import { Sequelize } from 'sequelize';
+import { db } from '../src/configs/database';
+import { syncDatabase } from '../src/configs/database/sequelize';
 
 async function runSeeders() {
-  const seedDir = path.join(__dirname, '../configs/database/seeders');
+  const seedDir = path.join(__dirname, '../src/configs/database/seeders');
   const seeds = fs.readdirSync(seedDir).filter((file) => file.endsWith('.js'));
   const queryInterface = db.sequelize.getQueryInterface();
 
