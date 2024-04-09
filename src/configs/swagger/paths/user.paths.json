@@ -1,0 +1,677 @@
+{
+    "/users": {
+        "get": {
+            "tags": [
+                "users"
+            ],
+            "summary": "Get all users",
+            "description": "Get all users",
+            "operationId": "users.getUsers",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/page"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/offset"
+                },
+                {
+                    "$ref": "#/components/parameters/search"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                },
+                {
+                    "$ref": "#/components/parameters/embed"
+                },
+                {
+                    "name": "f_username",
+                    "in": "query",
+                    "description": "Filter by username",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "f_email",
+                    "in": "query",
+                    "description": "Filter by email",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "f_firstName",
+                    "in": "query",
+                    "description": "Filter by first name",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "f_lastName",
+                    "in": "query",
+                    "description": "Filter by last name",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string",
+                                "example": "Email verified successfully"
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Invalid input"
+                },
+                "422": {
+                    "description": "Validation exception"
+                }
+            }
+        },
+        "delete": {
+            "tags": [
+                "users"
+            ],
+            "summary": "Delete multiple users by IDs",
+            "description": "Delete multiple users by IDs",
+            "operationId": "users.deleteUsersByIds",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "ids": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Success"
+                                    },
+                                    "data": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Invalid input"
+                },
+                "422": {
+                    "description": "Validation exception"
+                }
+            }
+        }
+    },
+    "/user/me": {
+        "get": {
+            "tags": [
+                "users"
+            ],
+            "summary": "Get current user",
+            "description": "Get current user",
+            "operationId": "users.getMyProfile",
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "data"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Success"
+                                    },
+                                    "data": {
+                                        "required": [
+                                            "fullName",
+                                            "id",
+                                            "username",
+                                            "firstName",
+                                            "lastName",
+                                            "email",
+                                            "emailVerified",
+                                            "countryCode",
+                                            "phoneNumber",
+                                            "phoneNumberVerified",
+                                            "roleId",
+                                            "enabled2fa",
+                                            "status",
+                                            "createdAt",
+                                            "updatedAt",
+                                            "role"
+                                        ],
+                                        "properties": {
+                                            "fullName": {
+                                                "type": "string",
+                                                "example": "first last"
+                                            },
+                                            "id": {
+                                                "type": "string",
+                                                "example": "d7810ffd-c1fd-452e-9755-2fb7740a8cdf"
+                                            },
+                                            "username": {
+                                                "type": "string",
+                                                "example": "user1"
+                                            },
+                                            "firstName": {
+                                                "type": "string",
+                                                "example": "first"
+                                            },
+                                            "lastName": {
+                                                "type": "string",
+                                                "example": "last"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "hnam1@gmail.com"
+                                            },
+                                            "emailVerified": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "phoneNumberVerified": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "roleId": {
+                                                "type": "string",
+                                                "example": "7f249167-61d9-4b35-83c9-0b792a6ba489"
+                                            },
+                                            "enabled2fa": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "inactive"
+                                            },
+                                            "createdAt": {
+                                                "type": "string",
+                                                "example": "2024-04-09T07:20:41.727Z"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "example": "2024-04-09T08:08:58.382Z"
+                                            },
+                                            "role": {
+                                                "required": [
+                                                    "id",
+                                                    "code",
+                                                    "name"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "7f249167-61d9-4b35-83c9-0b792a6ba489"
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": "user"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "User"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Invalid status value"
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    },
+    "/users/{id}": {
+        "get": {
+            "tags": [
+                "users"
+            ],
+            "summary": "Get user by ID",
+            "description": "Get user by ID",
+            "operationId": "users.getUserById",
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of user to return",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "data"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Success"
+                                    },
+                                    "data": {
+                                        "required": [
+                                            "fullName",
+                                            "id",
+                                            "username",
+                                            "firstName",
+                                            "lastName",
+                                            "email",
+                                            "emailVerified",
+                                            "countryCode",
+                                            "phoneNumber",
+                                            "phoneNumberVerified",
+                                            "roleId",
+                                            "enabled2fa",
+                                            "status",
+                                            "createdAt",
+                                            "updatedAt",
+                                            "role"
+                                        ],
+                                        "properties": {
+                                            "fullName": {
+                                                "type": "string",
+                                                "example": "first last"
+                                            },
+                                            "id": {
+                                                "type": "string",
+                                                "example": "d7810ffd-c1fd-452e-9755-2fb7740a8cdf"
+                                            },
+                                            "username": {
+                                                "type": "string",
+                                                "example": "user1"
+                                            },
+                                            "firstName": {
+                                                "type": "string",
+                                                "example": "first"
+                                            },
+                                            "lastName": {
+                                                "type": "string",
+                                                "example": "last"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "hnam1@gmail.com"
+                                            },
+                                            "emailVerified": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "phoneNumberVerified": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "roleId": {
+                                                "type": "string",
+                                                "example": "7f249167-61d9-4b35-83c9-0b792a6ba489"
+                                            },
+                                            "enabled2fa": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "inactive"
+                                            },
+                                            "createdAt": {
+                                                "type": "string",
+                                                "example": "2024-04-09T07:20:41.727Z"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "example": "2024-04-09T08:08:58.382Z"
+                                            },
+                                            "role": {
+                                                "required": [
+                                                    "id",
+                                                    "code",
+                                                    "name"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "7f249167-61d9-4b35-83c9-0b792a6ba489"
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": "user"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "User"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Invalid status value"
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        },
+        "put": {
+            "tags": [
+                "users"
+            ],
+            "summary": "Edit user by ID",
+            "description": "Edit user by ID",
+            "operationId": "users.editUserById",
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of user to return",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "firstName": {
+                                    "type": "string"
+                                },
+                                "lastName": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "roleId": {
+                                    "type": "string"
+                                },
+                                "emailVerified": {
+                                    "type": "boolean"
+                                },
+                                "countryCode": {
+                                    "type": "string"
+                                },
+                                "phoneNumber": {
+                                    "type": "string"
+                                },
+                                "phoneNumberVerified": {
+                                    "type": "boolean"
+                                },
+                                "enabled2fa": {
+                                    "type": "boolean"
+                                },
+                                "status": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "data"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Success"
+                                    },
+                                    "data": {
+                                        "required": [
+                                            "fullName",
+                                            "id",
+                                            "username",
+                                            "firstName",
+                                            "lastName",
+                                            "email",
+                                            "emailVerified",
+                                            "countryCode",
+                                            "phoneNumber",
+                                            "phoneNumberVerified",
+                                            "roleId",
+                                            "enabled2fa",
+                                            "status",
+                                            "createdAt",
+                                            "updatedAt",
+                                            "role"
+                                        ],
+                                        "properties": {
+                                            "fullName": {
+                                                "type": "string",
+                                                "example": "first last"
+                                            },
+                                            "id": {
+                                                "type": "string",
+                                                "example": "d7810ffd-c1fd-452e-9755-2fb7740a8cdf"
+                                            },
+                                            "username": {
+                                                "type": "string",
+                                                "example": "user1"
+                                            },
+                                            "firstName": {
+                                                "type": "string",
+                                                "example": "first"
+                                            },
+                                            "lastName": {
+                                                "type": "string",
+                                                "example": "last"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "hnam1@gmail.com"
+                                            },
+                                            "emailVerified": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "phoneNumberVerified": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "roleId": {
+                                                "type": "string",
+                                                "example": "7f249167-61d9-4b35-83c9-0b792a6ba489"
+                                            },
+                                            "enabled2fa": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "inactive"
+                                            },
+                                            "createdAt": {
+                                                "type": "string",
+                                                "example": "2024-04-09T07:20:41.727Z"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "example": "2024-04-09T08:08:58.382Z"
+                                            },
+                                            "role": {
+                                                "required": [
+                                                    "id",
+                                                    "code",
+                                                    "name"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "7f249167-61d9-4b35-83c9-0b792a6ba489"
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": "user"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "User"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Invalid status value"
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        },
+        "delete": {
+            "tags": [
+                "users"
+            ],
+            "summary": "Delete user by ID",
+            "description": "Delete user by ID",
+            "operationId": "users.deleteUserById",
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of user to return",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "data"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Success"
+                                    },
+                                    "data": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Invalid status value"
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    }
+}

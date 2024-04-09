@@ -104,7 +104,7 @@ Sort:
 
 ```
 
-GET /stores?sort=-createdAt
+GET /stores?sort=-createdAt|id
 
 ```
 

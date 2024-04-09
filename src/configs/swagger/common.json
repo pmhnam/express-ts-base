@@ -1,0 +1,99 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Swagger Express.js codebase",
+        "description": "This is RESTful API for Express codebase",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "email": "hnam@duck.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "/api-docs"
+        },
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "/api/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "authentication",
+            "description": "Operations about authentication and authorization"
+        },
+        {
+            "name": "users",
+            "description": "Operations about user"
+        },
+        {
+            "name": "roles",
+            "description": "Operations about role"
+        }
+    ],
+    "paths": {},
+    "components": {
+        "schemas": {},
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "parameters": {
+            "page": {
+                "name": "page",
+                "in": "query",
+                "description": "Page number",
+                "schema": {
+                    "type": "integer",
+                    "default": 1
+                }
+            },
+            "limit": {
+                "name": "limit",
+                "in": "query",
+                "description": "Page size",
+                "schema": {
+                    "type": "integer",
+                    "default": 25
+                }
+            },
+            "offset": {
+                "name": "offset",
+                "in": "query",
+                "description": "Offset",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "search": {
+                "name": "search",
+                "in": "query",
+                "description": "Search keyword",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "sort": {
+                "name": "sort",
+                "in": "query",
+                "description": "Sort field",
+                "schema": {
+                    "type": "string",
+                    "example": "-createdAt|id"
+                }
+            },
+            "embed": {
+                "name": "embed",
+                "in": "query",
+                "description": "Embed field",
+                "schema": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -9,7 +9,7 @@ import { corsOptions } from '@configs/cors';
 import { config } from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import { NODE_ENV } from '@src/api/v1/utils/constants/enum';
-import apiDocs from '@configs/swagger/index.json';
+import apiDocs from '@configs/swagger/index';
 import ResponseHandler from '../middlewares/response.middleware';
 import { errorHandler, notFoundHandler } from '../middlewares/error.middleware';
 import { apiLimiter } from '../rateLimit';

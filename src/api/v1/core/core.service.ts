@@ -116,7 +116,7 @@ abstract class CoreService {
   private getSortQuery({ sort }: IGetSortQueryDto) {
     const { sortFields } = this.params;
 
-    const arrSort = sort.split('&');
+    const arrSort = sort.split('|');
 
     const sortQuery = arrSort.reduce((query, item) => {
       const [key] = item.split('-');

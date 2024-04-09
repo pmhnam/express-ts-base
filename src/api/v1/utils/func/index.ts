@@ -15,7 +15,13 @@ export const generateOTP = (
     specialChars?: boolean;
   }
 ) => {
-  return otpGenerator.generate(length, { ...options, digits: true, specialChars: false });
+  return otpGenerator.generate(length, {
+    digits: true,
+    specialChars: false,
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
+    ...options,
+  });
 };
 
 export const sendMail = async (

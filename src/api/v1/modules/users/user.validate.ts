@@ -1,5 +1,6 @@
 import { Joi } from 'express-validation';
 import { coreQueryDto } from '../../core/core.validate';
+import { ACCOUNT_STATUS } from '../../utils/constants/enum';
 
 export const joiUser = {
   id: Joi.string(),
@@ -14,6 +15,8 @@ export const joiUser = {
   phoneNumberVerified: Joi.boolean(),
   resetPassword: Joi.boolean(),
   enabled2fa: Joi.boolean(),
+  status: Joi.string().valid(...Object.values(ACCOUNT_STATUS)),
+  roleId: Joi.string(),
 };
 
 export const getUsersValidatorDto = {
@@ -46,7 +49,8 @@ export const putUserByIdDto = {
     countryCode: joiUser.countryCode.optional(),
     phoneNumber: joiUser.phoneNumber.optional(),
     phoneNumberVerified: joiUser.phoneNumberVerified.optional(),
-    resetPassword: joiUser.resetPassword.optional(),
+    status: joiUser.status.optional(),
     enabled2fa: joiUser.enabled2fa.optional(),
+    roleId: joiUser.roleId.optional(),
   }),
 };

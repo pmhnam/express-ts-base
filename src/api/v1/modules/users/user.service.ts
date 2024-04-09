@@ -3,12 +3,13 @@ import { Request } from 'express';
 import { Op, Transaction } from 'sequelize';
 import { NotFoundHTTP } from '@src/configs/httpException';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
-import { UserModel } from '@src/configs/database/models';
+import { RoleModel, UserModel } from '@src/configs/database/models';
 import { IUpdateUserDto } from './user.interface';
 import CoreService from '../../core/core.service';
 
 class UserService extends CoreService {
   private readonly userModel;
+  private readonly roleModel;
   protected params: ICoreQueryParams = {
     searchFields: ['username', 'email'],
     sortFields: ['username', 'email', 'firstName', 'lastName', 'createdAt', 'updatedAt'],
@@ -20,6 +21,7 @@ class UserService extends CoreService {
   constructor() {
     super();
     this.userModel = UserModel;
+    this.roleModel = RoleModel;
   }
 
   async getUserById(id: string, transaction?: Transaction) {
@@ -36,6 +38,13 @@ class UserService extends CoreService {
           'deletedAt',
         ],
       },
+      include: [
+        {
+          model: this.roleModel,
+          as: 'role',
+          attributes: ['id', 'code', 'name'],
+        },
+      ],
       transaction,
     });
     if (!user) throw new NotFoundHTTP(i18nKey.users.userNotFound);

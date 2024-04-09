@@ -12,7 +12,7 @@ const userCtl = new UserController();
 userRouter.get('/me', auth, userCtl.getMyProfile);
 userRouter
   .route('/:id')
-  .get(auth4Admin, validate(getUserByIdDto), userCtl.cacheMiddleware, userCtl.getUserById)
+  .get(auth, validate(getUserByIdDto), userCtl.cacheMiddleware, userCtl.getUserById)
   .put(jwtAuth, auth, validate(putUserByIdDto), userCtl.updateUserById)
   .delete(jwtAuth, auth4Admin, validate(putUserByIdDto), userCtl.deleteUserById);
 userRouter.get('/', jwtAuth, auth4Admin, validate(getUsersValidatorDto), userCtl.cacheMiddleware, userCtl.getUsers);

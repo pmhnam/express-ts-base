@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-useless-constructor */
-import { Request } from 'express';
 import { ICoreQueryParams } from '@src/api/v1/utils/constants/interface';
 import { BadRequestHTTP, InternalServerHTTP, NotFoundHTTP } from '@src/configs/httpException';
 import bcrypt from 'bcryptjs';
@@ -9,11 +8,11 @@ import moment from 'moment';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
 import { IUserModel } from '@src/configs/database/models/user.model';
 import { Op, Transaction } from 'sequelize';
-import { getCache } from '@src/configs/database/redis/cache';
 import { RoleModel, UserModel } from '@src/configs/database/models';
 import { ACCOUNT_STATUS, ROLE_CODES } from '@src/api/v1/utils/constants/enum';
 import jwt from '@src/configs/jwt';
 import { generateOTP } from '@src/api/v1/utils/func';
+import _ from 'lodash';
 import { ICreateUserDto, IForgotPasswordDto, ILoginDto, IVerifyEmailDto } from './auth.interface';
 import CoreService from '../../core/core.service';
 
@@ -58,8 +57,18 @@ class AuthService extends CoreService {
       }
     );
     const tokens = this.signTokens(user);
+    const jsonUser = _.omit(user.toJSON(), [
+      'password',
+      'otp',
+      'otpExpires',
+      'forgotPasswordCode',
+      'forgotPasswordCodeExpires',
+      'resetPassword',
+      'secret2fa',
+      'deletedAt',
+    ]);
 
-    return { user, tokens };
+    return { user: jsonUser, tokens };
   }
 
   async login(dto: ILoginDto, transaction?: Transaction) {
@@ -67,11 +76,22 @@ class AuthService extends CoreService {
 
     const user = await this.userModel.findOne({
       where: { [Op.or]: [{ username }, { email }] },
-      attributes: ['id', 'email', 'username', 'firstName', 'lastName', 'password', 'phoneNumber', 'status'],
+      attributes: {
+        exclude: [
+          'otp',
+          'otpExpires',
+          'forgotPasswordCode',
+          'forgotPasswordCodeExpires',
+          'resetPassword',
+          'secret2fa',
+          'deletedAt',
+        ],
+      },
       include: [
         {
           model: this.roleModel,
           as: 'role',
+          attributes: ['id', 'code', 'name'],
         },
       ],
       transaction,
@@ -120,11 +140,12 @@ class AuthService extends CoreService {
   async refreshAccessToken(userId: string, transaction?: Transaction) {
     const user = await this.userModel.findOne({
       where: { id: userId },
-      attributes: ['id', 'email', 'username', 'firstName', 'lastName', 'password', 'phoneNumber', 'status'],
+      attributes: ['id', 'email', 'username', 'firstName', 'lastName', 'phoneNumber', 'status'],
       include: [
         {
           model: this.roleModel,
           as: 'role',
+          attributes: ['id', 'code', 'name'],
         },
       ],
       transaction,

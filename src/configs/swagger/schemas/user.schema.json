@@ -1,0 +1,109 @@
+{
+    "User": {
+        "type": "object",
+        "required": [
+            "username",
+            "email",
+            "firstName",
+            "lastName",
+            "roleId"
+        ],
+        "properties": {
+            "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+            },
+            "username": {
+                "type": "string",
+                "example": "theUser"
+            },
+            "email": {
+                "type": "string",
+                "example": "john@email.com"
+            },
+            "firstName": {
+                "type": "string",
+                "example": "John"
+            },
+            "lastName": {
+                "type": "string",
+                "example": "James"
+            },
+            "password": {
+                "type": "string",
+                "example": "password"
+            },
+            "roleId": {
+                "type": "string",
+                "format": "uuid",
+                "example": "2b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+            },
+            "emailVerified": {
+                "type": "boolean"
+            },
+            "countryCode": {
+                "type": "string",
+                "example": "VN"
+            },
+            "phoneNumber": {
+                "type": "string",
+                "example": "+84 123456789"
+            },
+            "phoneNumberVerified": {
+                "type": "boolean"
+            },
+            "otp": {
+                "type": "string",
+                "example": "123456"
+            },
+            "otpExpires": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "forgotPasswordCode": {
+                "type": "string",
+                "example": "123456"
+            },
+            "forgotPasswordCodeExpires": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "resetPassword": {
+                "type": "boolean"
+            },
+            "enabled2fa": {
+                "type": "boolean"
+            },
+            "secret2fa": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string",
+                "description": "User Status",
+                "enum": [
+                    "active",
+                    "inactive"
+                ]
+            },
+            "updatedBy": {
+                "type": "string"
+            },
+            "deletedBy": {
+                "type": "string"
+            },
+            "createdAt": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "deletedAt": {
+                "type": "string",
+                "format": "date-time"
+            }
+        }
+    }
+}
