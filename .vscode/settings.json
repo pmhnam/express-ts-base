@@ -9,6 +9,7 @@
     "requirepass",
     "sadd",
     "scard",
+    "sendgrid",
     "sequelizerc",
     "smembers",
     "srem",

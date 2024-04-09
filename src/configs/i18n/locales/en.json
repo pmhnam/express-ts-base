@@ -8,6 +8,14 @@
         "otpNotMatch": "Invalid OTP code",
         "otpExpired": "OTP expired",
         "userExisted": "Email or username has already been used.",
-        "invalidToken": "Invalid token"
+        "invalidToken": "Invalid token",
+        "missingToken": "Missing token",
+        "invalidTokenType": "Invalid token type",
+        "tokenExpired": "Token expired",
+        "notAllowed": "Action not allowed",
+        "wrongUsernameOrPassword": "Wrong username or password"
+    },
+    "user": {
+        "userNotFound": "User not found"
     }
 }

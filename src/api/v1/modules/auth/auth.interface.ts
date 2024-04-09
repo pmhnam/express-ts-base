@@ -19,3 +19,8 @@ export interface IForgotPasswordDto {
 export interface ILoginDto extends IForgotPasswordDto {
   password: string;
 }
+
+export interface IVerifyEmailDto {
+  otp: string;
+  email: string;
+}

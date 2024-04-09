@@ -154,3 +154,10 @@ UserModel.beforeBulkUpdate(async (opt: any) => {
     opt.attributes.password = await hashPassword(opt.attributes.password);
   }
 });
+UserModel.beforeDestroy(async (user) => {
+  user.email = `deleted_${user.email}`;
+  user.username = `deleted_${user.username}`;
+});
+UserModel.beforeBulkDestroy(async (opt) => {
+  opt.individualHooks = true;
+});

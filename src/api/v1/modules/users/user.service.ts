@@ -43,13 +43,13 @@ class UserService extends CoreService {
     return user;
   }
 
-  async updateUserById(id: string, dto: IUpdateUserDto) {
-    await this.getUserById(id);
-    return await this.userModel.update(dto, { where: { id } });
+  async updateUserById(id: string, dto: IUpdateUserDto, transaction?: Transaction) {
+    const user = await this.getUserById(id, transaction);
+    return await user.update(dto, { transaction });
   }
 
-  async getUsers(req: Request) {
-    const queryParams = this.getParams(req.query);
+  async getUsers(query: Request['query'], transaction?: Transaction) {
+    const queryParams = this.getParams(query);
 
     const { rows: users, count } = await this.userModel.findAndCountAll({
       ...queryParams,
@@ -65,18 +65,19 @@ class UserService extends CoreService {
           'deletedAt',
         ],
       },
+      transaction,
     });
 
     const metadata = this.getMetadata(count);
     return { users, metadata };
   }
 
-  async deleteUserById(id: string, deletedBy: string) {
+  async deleteUserById(id: string, deletedBy: string, force = false) {
     const transaction = await this.getTransaction();
     try {
       const user = await this.getUserById(id);
-      await this.userModel.update({ deletedBy }, { where: { id }, transaction });
-      await user.destroy({ transaction });
+      await user.update({ deletedBy }, { transaction });
+      await user.destroy({ transaction, force });
       await transaction.commit();
       return true;
     } catch (error) {
@@ -85,13 +86,13 @@ class UserService extends CoreService {
     }
   }
 
-  async deleteUsersByIds(ids: string[], deletedBy: string) {
+  async deleteUsersByIds(ids: string[], deletedBy: string, force = false) {
     const transaction = await this.getTransaction();
     try {
       const users = await this.userModel.findAll({ where: { id: { [Op.in]: ids } }, transaction });
       if (users.length !== ids.length) throw new Error('User not found');
       await this.userModel.update({ deletedBy }, { where: { id: { [Op.in]: ids } }, transaction });
-      await this.userModel.destroy({ where: { id: { [Op.in]: ids } }, transaction });
+      await this.userModel.destroy({ where: { id: { [Op.in]: ids } }, transaction, force });
       await transaction.commit();
       return true;
     } catch (error) {
