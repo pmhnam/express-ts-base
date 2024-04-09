@@ -7,6 +7,10 @@ export abstract class CoreController {
     return await setCache(key, { data, metadata }, ttl);
   };
 
+  public getCache = async (key: string) => {
+    return await getCache(key);
+  };
+
   public removeCache = async (key: string) => {
     return await removeCache(key);
   };

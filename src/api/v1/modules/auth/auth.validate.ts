@@ -43,3 +43,10 @@ export const refreshTokenValidatorDto: schema = {
     refreshToken: Joi.string().required(),
   }),
 };
+
+export const verifyEmailValidatorDto: schema = {
+  query: Joi.object({
+    otp: Joi.string().required(),
+    email: Joi.string().email().required(),
+  }),
+};

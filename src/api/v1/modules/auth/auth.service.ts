@@ -8,13 +8,13 @@ import bcrypt from 'bcryptjs';
 import moment from 'moment';
 import { i18nKey } from '@src/configs/i18n/init.i18n';
 import { IUserModel } from '@src/configs/database/models/user.model';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { getCache } from '@src/configs/database/redis/cache';
 import { RoleModel, UserModel } from '@src/configs/database/models';
-import { ROLE_CODES } from '@src/api/v1/utils/constants/enum';
+import { ACCOUNT_STATUS, ROLE_CODES } from '@src/api/v1/utils/constants/enum';
 import jwt from '@src/configs/jwt';
 import { generateOTP } from '@src/api/v1/utils/func';
-import { ICreateUserDto, IForgotPasswordDto, ILoginDto } from './auth.interface';
+import { ICreateUserDto, IForgotPasswordDto, ILoginDto, IVerifyEmailDto } from './auth.interface';
 import CoreService from '../../core/core.service';
 
 class AuthService extends CoreService {
@@ -33,15 +33,16 @@ class AuthService extends CoreService {
     super();
   }
 
-  async register(dto: ICreateUserDto) {
+  async register(dto: ICreateUserDto, transaction?: Transaction) {
     const { username = '', email = '' } = dto;
 
     const existedUser = await this.userModel.findOne({
       where: { [Op.or]: [{ username }, { email }] },
+      transaction,
     });
     if (existedUser) throw new BadRequestHTTP(i18nKey.auth.userExisted);
 
-    const userRole = await this.roleModel.findOne({ where: { code: ROLE_CODES.USER } });
+    const userRole = await this.roleModel.findOne({ where: { code: ROLE_CODES.USER }, transaction });
     if (!userRole) throw new InternalServerHTTP(i18nKey.internalServerError);
 
     const user = await this.userModel.create(
@@ -53,6 +54,7 @@ class AuthService extends CoreService {
             as: 'role',
           },
         ],
+        transaction,
       }
     );
     const tokens = this.signTokens(user);
@@ -60,7 +62,7 @@ class AuthService extends CoreService {
     return { user, tokens };
   }
 
-  async login(dto: ILoginDto) {
+  async login(dto: ILoginDto, transaction?: Transaction) {
     const { username = '', email = '', password } = dto;
 
     const user = await this.userModel.findOne({
@@ -72,52 +74,52 @@ class AuthService extends CoreService {
           as: 'role',
         },
       ],
+      transaction,
     });
-    if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
+    if (!user) throw new NotFoundHTTP(i18nKey.auth.wrongUsernameOrPassword);
 
     const { password: pws, ...restUser } = user.toJSON();
 
     const isMatch = bcrypt.compareSync(password, pws);
-    if (!isMatch) throw new BadRequestHTTP(i18nKey.auth.loginFailed);
+    if (!isMatch) throw new BadRequestHTTP(i18nKey.auth.wrongUsernameOrPassword);
 
     const tokens = this.signTokens(user);
 
     return { user: restUser, tokens };
   }
 
-  async forgotPassword(dto: IForgotPasswordDto) {
+  async forgotPassword(dto: IForgotPasswordDto, transaction?: Transaction) {
     const { email = '', username = '' } = dto;
-    const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
+    const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] }, transaction });
     if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
 
     const otp = generateOTP();
     const expireMinutes = Number(process.env.OTP_EXPIRES_TIME || 5);
     const expires = moment().add(expireMinutes, 'minutes').toDate();
 
-    await this.setForgotPasswordData(user.id, { otp, expires });
+    await this.setForgotPasswordData(user.id, { otp, expires }, transaction);
 
-    return { otp, expires, email };
+    return { otp, expires, email: user.email };
   }
 
-  async resetPassword(req: Request) {
-    const { username = '', email = '', otp, newPassword } = req.body;
+  async resetPassword(
+    dto: { email?: string; username?: string; otp: string; newPassword: string },
+    transaction?: Transaction
+  ) {
+    const { username = '', email = '', otp, newPassword } = dto;
 
-    const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] } });
+    const user = await this.userModel.findOne({ where: { [Op.or]: [{ username }, { email }] }, transaction });
     if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
 
     this.compareOtp(user, otp);
-    await this.setResetPasswordData(user.id, { password: newPassword });
+    await this.setResetPasswordData(user.id, { password: newPassword }, transaction);
 
     return true;
   }
 
-  async refreshAccessToken(refreshToken: string) {
-    const payload = jwt.verifyRefreshToken(refreshToken);
-    const redisSessionKey = `session:${payload.id}`;
-    const session = await getCache(redisSessionKey);
-    if (!session) throw new BadRequestHTTP(i18nKey.auth.tokenExpired);
+  async refreshAccessToken(userId: string, transaction?: Transaction) {
     const user = await this.userModel.findOne({
-      where: { id: payload.id },
+      where: { id: userId },
       attributes: ['id', 'email', 'username', 'firstName', 'lastName', 'password', 'phoneNumber', 'status'],
       include: [
         {
@@ -125,11 +127,43 @@ class AuthService extends CoreService {
           as: 'role',
         },
       ],
+      transaction,
     });
     if (!user) throw new BadRequestHTTP(i18nKey.auth.invalidToken);
 
-    const accessToken = this.signTokens(user, true);
-    return accessToken;
+    const accessToken = this.signAccessTokens(user);
+    return { user, tokens: { accessToken, refreshToken: '' } };
+  }
+
+  async generateOTP(id: string, transaction?: Transaction) {
+    const user = await this.userModel.findOne({ where: { id }, transaction });
+    if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
+
+    const otp = generateOTP();
+    const expireMinutes = Number(process.env.OTP_EXPIRES_TIME || 5);
+    const expires = moment().add(expireMinutes, 'minutes').toDate();
+
+    user.otp = otp;
+    user.otpExpires = expires;
+    await user.save({ transaction });
+
+    return { otp, expireMinutes };
+  }
+
+  async verifyEmail({ email, otp }: IVerifyEmailDto, transaction?: Transaction) {
+    const user = await this.userModel.findOne({ where: { email }, transaction });
+    if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
+
+    if (user.otp !== otp) throw new BadRequestHTTP(i18nKey.auth.otpNotMatch);
+    if (moment().isAfter(user.otpExpires)) throw new BadRequestHTTP(i18nKey.auth.otpExpired);
+
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    user.emailVerified = true;
+    user.status = ACCOUNT_STATUS.ACTIVE;
+    await user.save({ transaction });
+
+    return user;
   }
 
   // #region private methods
@@ -145,18 +179,22 @@ class AuthService extends CoreService {
     return true;
   }
 
-  private async setForgotPasswordData(userId: string, { otp, expires }: { otp: string; expires: Date }) {
+  private async setForgotPasswordData(
+    userId: string,
+    { otp, expires }: { otp: string; expires: Date },
+    transaction?: Transaction
+  ) {
     return await this.userModel.update(
       {
         forgotPasswordCode: otp,
         forgotPasswordCodeExpires: expires,
         resetPassword: true,
       },
-      { where: { id: userId } }
+      { where: { id: userId }, transaction }
     );
   }
 
-  private async setResetPasswordData(userId: string, { password }: { password: string }) {
+  private async setResetPasswordData(userId: string, { password }: { password: string }, transaction?: Transaction) {
     return await this.userModel.update(
       {
         forgotPasswordCode: undefined,
@@ -164,11 +202,11 @@ class AuthService extends CoreService {
         resetPassword: false,
         password,
       },
-      { where: { id: userId } }
+      { where: { id: userId }, transaction }
     );
   }
 
-  private signTokens(user: IUserModel, genAccessToken = false) {
+  private signTokens(user: IUserModel) {
     const tokenPayload = {
       id: user.id,
       email: user.email,
@@ -179,11 +217,22 @@ class AuthService extends CoreService {
       phoneNumber: user.phoneNumber,
       role: user.role,
     };
-    if (genAccessToken) return jwt.signAccessToken(tokenPayload);
-
     return jwt.sign(tokenPayload);
   }
 
+  private signAccessTokens(user: IUserModel) {
+    const tokenPayload = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      status: user.status,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+    };
+    return jwt.signAccessToken(tokenPayload);
+  }
   // #endregion
 }
 

@@ -42,7 +42,7 @@ export class UserController extends CoreController {
 
   getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { users, metadata } = await this.userService.getUsers(req);
+      const { users, metadata } = await this.userService.getUsers(req.query);
       await this.setCache(req.originalUrl, users, { metadata });
       res.onSuccess(users, { metadata });
     } catch (error) {

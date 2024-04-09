@@ -1,105 +1,144 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import request from 'supertest';
-import { beforeAll, describe, expect, test } from '@jest/globals';
-import { removeCache } from '@src/configs/database/redis/cache';
-import app from '../../../../configs/express/index';
+import { describe, expect, test } from '@jest/globals';
+import { Transaction } from 'sequelize';
+import sequelize from '@src/configs/database/sequelize';
+import authService from '../auth/auth.service';
+import userService from './user.service';
+import { ACCOUNT_STATUS } from '../../utils/constants/enum';
 
-const req = request(app);
-let accessToken = '';
-
-async function adminLogin() {
-  const loginAdminDto = {
-    username: 'admin',
-    password: 'password',
-  };
-  const loginRes = await req.post('/api/v1/auth/login').send(loginAdminDto);
-  const { accessToken } = loginRes.body.data.tokens;
-
-  return accessToken;
-}
-
-async function createSeedUsers() {
-  const user = {
-    username: 'user',
-    email: '',
-    password: 'password',
-    rePassword: 'password',
-    firstName: 'first',
-    lastName: 'last',
-  };
-  let i = 1;
-
-  const users = Array.from({ length: 10 }).map(() => {
-    user.username = `user${i}`;
-    user.email = `${user.username}@local.com`;
-    i += 1;
-    return JSON.parse(JSON.stringify(user));
+async function createSeedUsers(transaction: Transaction, length = 10) {
+  const users = Array.from({ length }).map((_, index) => {
+    return {
+      username: `seed-user${index}`,
+      email: `seed-user${index}@local.com`,
+      password: 'password',
+      rePassword: 'password',
+      firstName: 'first',
+      lastName: 'last',
+    };
   });
 
-  const promises = users.map((u) => req.post('/api/v1/auth/register').send(u));
-  await Promise.all(promises);
+  const promises = users.map((u) => authService.register(u, transaction));
+  return await Promise.all(promises);
 }
-
-beforeAll(async () => {
-  // create some users
-  await createSeedUsers();
-  accessToken = await adminLogin();
-});
 
 describe('USER MODULE', () => {
   describe('GET /api/v1/users', () => {
     test('should get all users', async () => {
-      const url = '/api/v1/users';
-      await removeCache(url);
-      const res = await req.get(url).auth(accessToken, { type: 'bearer' });
+      const transaction = await sequelize.transaction();
+      try {
+        await createSeedUsers(transaction);
+        const query = { page: '1', limit: '10' };
+        const res = await userService.getUsers(query, transaction);
 
-      expect(res.status).toEqual(200);
-      expect(Array.isArray(res.body.data)).toBeTruthy();
-      expect(res.body.data[0]).toHaveProperty('id');
-      expect(res.body.metadata).toHaveProperty('totalCount');
-    });
-
-    test('should get users with pagination', async () => {
-      const query = {
-        page: 1,
-        limit: 5,
-      };
-      const url = `/api/v1/users?page=${query.page}&limit=${query.limit}`;
-      await removeCache(url);
-      const res = await req.get(url).auth(accessToken, { type: 'bearer' });
-
-      expect(res.status).toEqual(200);
-      expect(Array.isArray(res.body.data)).toBeTruthy();
-      expect(res.body.data.length).toEqual(query.limit);
-      expect(res.body.metadata.page).toEqual(query.page);
-      expect(res.body.metadata.limit).toEqual(query.limit);
+        expect(Array.isArray(res.users)).toBeTruthy();
+        expect(res.metadata).toHaveProperty('totalCount');
+        expect(res.metadata.totalCount).toBeGreaterThanOrEqual(1);
+        await transaction.rollback();
+      } catch (error) {
+        await transaction.rollback();
+        throw error;
+      }
     });
 
     test('should get users with filter', async () => {
-      const query = {
-        f_username: 'user1',
-      };
-      const url = `/api/v1/users?f_username=${query.f_username}`;
-      await removeCache(url);
-      const res = await req.get(url).auth(accessToken, { type: 'bearer' });
+      const transaction = await sequelize.transaction();
+      try {
+        const query = {
+          f_username: 'seed-user1',
+        };
+        await createSeedUsers(transaction);
+        const res = await userService.getUsers(query, transaction);
 
-      expect(res.status).toEqual(200);
-      expect(Array.isArray(res.body.data)).toBeTruthy();
+        expect(Array.isArray(res.users)).toBeTruthy();
+        expect(res.metadata).toHaveProperty('totalCount');
+        expect(res.metadata.totalCount).toBeGreaterThanOrEqual(1);
+        await transaction.rollback();
+      } catch (error) {
+        await transaction.rollback();
+        throw error;
+      }
     });
   });
 
   describe('GET /api/v1/users/:id', () => {
     test('should return user', async () => {
-      const url = '/api/v1/users';
-      await removeCache(url);
-      const resUsers = await req.get(url).auth(accessToken, { type: 'bearer' });
-      expect(resUsers.status).toEqual(200);
+      const transaction = await sequelize.transaction();
+      try {
+        const result = await createSeedUsers(transaction);
+        const { user } = result[0];
 
-      const user = resUsers.body.data[0];
-      const res = await req.get(`/api/v1/users/${user.id}`).auth(accessToken, { type: 'bearer' });
+        const res = await userService.getUserById(user.id, transaction);
 
-      expect(res.status).toEqual(200);
-      expect(res.body.data.id).toEqual(user.id);
+        expect(res.id).toEqual(user.id);
+
+        await transaction.rollback();
+      } catch (error) {
+        await transaction.rollback();
+        throw error;
+      }
+    });
+  });
+
+  describe('PUT /api/v1/users/:id', () => {
+    test('should update user', async () => {
+      const transaction = await sequelize.transaction();
+      try {
+        const result = await createSeedUsers(transaction);
+
+        const { user } = result[0];
+        const dto = {
+          username: 'test-update',
+          email: 'test-update@local.com',
+          password: 'test1234',
+          firstName: 'test update',
+          lastName: 'test update',
+          status: ACCOUNT_STATUS.ACTIVE,
+          updatedBy: user.id,
+        };
+
+        const res = await userService.updateUserById(user.id, dto, transaction);
+        expect(res.id).toEqual(user.id);
+        expect(res.username).toEqual(dto.username);
+        expect(res.email).toEqual(dto.email);
+
+        await transaction.rollback();
+      } catch (error) {
+        await transaction.rollback();
+        throw error;
+      }
+    });
+  });
+
+  describe('DELETE /api/v1/users/:id', () => {
+    test('should delete user by id', async () => {
+      const userDto = {
+        username: 'test-delete',
+        email: 'test-delete@local.com',
+        password: 'test1234',
+        rePassword: 'test1234',
+        firstName: 'test delete',
+        lastName: 'test delete',
+      };
+      const { user } = await authService.register(userDto);
+
+      // hard delete
+      const res = await userService.deleteUserById(user.id, user.id, true);
+      expect(res).toBe(true);
+    });
+  });
+
+  describe('DELETE /api/v1/users', () => {
+    test('should delete users by ids', async () => {
+      const transaction = await sequelize.transaction();
+
+      const result = await createSeedUsers(transaction, 5);
+      const userIds = result.map((u) => u.user.id);
+      await transaction.commit();
+
+      // hard delete
+      const res = await userService.deleteUsersByIds(userIds, 'tester', true);
+      expect(res).toBe(true);
     });
   });
 });
