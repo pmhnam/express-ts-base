@@ -1,7 +1,6 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable class-methods-use-this */
 import { Model, ModelStatic, Op } from 'sequelize';
 import { db } from '@src/configs/database';
 import {
@@ -13,10 +12,8 @@ import {
   IMetadata,
   ICoreQueryParams,
 } from '@src/api/v1/utils/constants/interface';
+import { QUERY_PREFIX } from '../utils/constants/enum';
 
-enum QUERY_PREFIX {
-  FILTER = 'f_',
-}
 interface IQueryInclude {
   model: ModelStatic<Model<any, any>>;
   as: string;
@@ -79,15 +76,15 @@ abstract class CoreService {
   private getPagination(dto: IGetPaginationDto) {
     const { limit = '25', offset = '0', page = '1' } = dto;
 
-    const _limit = limit === '-1' ? null : parseInt(limit, 10);
-    if (_limit == null) {
+    const parsedLimit = limit === '-1' ? null : parseInt(limit, 10);
+    if (parsedLimit == null) {
       return { limit: null, page: null, offset: 0 };
     }
 
-    const _page = parseInt(page, 10);
-    const _offset = offset ? parseInt(offset, 10) : (_page - 1) * _limit;
+    const parsedPage = parseInt(page, 10);
+    const parsedOffset = offset ? parseInt(offset, 10) : (parsedPage - 1) * parsedLimit;
 
-    return { limit: _limit, offset: _offset, page: _page };
+    return { limit: parsedLimit, offset: parsedOffset, page: parsedPage };
   }
 
   private getSearchQuery({ search }: IGetSearchQueryDto) {
@@ -176,7 +173,6 @@ abstract class CoreService {
         // check logic for gt, gte, lt, lte
         // eg: f_user.balance = '>1000'
         // eg: f_user.balance = '<=200'
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [opKey, opValue] = Object.entries(symbolsConfig).find(([_, symbol]) => rawValue.includes(symbol)) || [];
 
         if (opKey && opValue) {

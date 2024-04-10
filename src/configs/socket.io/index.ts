@@ -82,6 +82,7 @@ class SocketServer extends SKServer {
   };
 
   private onMessage = (socket: ISocket) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return async (data: any) => {
       console.log('received', data);
       socket.to(data.socketId).emit('message', { response: 'received successfully' });

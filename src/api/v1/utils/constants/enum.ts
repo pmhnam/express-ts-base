@@ -13,3 +13,7 @@ export enum NODE_ENV {
   PRODUCTION = 'production',
   TEST = 'test',
 }
+
+export enum QUERY_PREFIX {
+  FILTER = 'f_',
+}

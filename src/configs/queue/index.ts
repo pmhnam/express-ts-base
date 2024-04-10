@@ -35,6 +35,7 @@ class MessageQueue {
   // thêm một consumer vào queue
   public async addQueueConsumer(
     queue: string,
+    // eslint-disable-next-line no-unused-vars
     callback: (arg0: ConsumeMessage) => Promise<object>
   ): Promise<Replies.Empty> {
     if (!this.connection || this.connection === ({} as Connection)) {
@@ -43,6 +44,7 @@ class MessageQueue {
     const channel = await this.connection.createChannel();
     await channel.assertQueue(queue, { durable: true });
     const result = channel.prefetch(1);
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     const doWork = async (msg: any) => {
       try {
         const response = await callback(msg);

@@ -7,6 +7,7 @@ export async function setCache(key: string, data: unknown, ttl = 1 * 60) {
     await redis.call('JSON.SET', key, '.', JSON.stringify(data));
     await redis.expire(key, ttl);
     return true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logger.error(error.message, { metadata: error });
     throw error;

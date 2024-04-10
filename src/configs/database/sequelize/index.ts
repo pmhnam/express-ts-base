@@ -21,6 +21,7 @@ export const syncDatabase = async (opts?: { force?: boolean }) => {
     if (reconnectTimeout) clearTimeout(reconnectTimeout);
     if (connectionTimeout) clearTimeout(connectionTimeout);
     logger.log('DB connected');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logger.error('DB connection failed, reconnecting...');
     // try to reconnect
