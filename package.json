@@ -12,7 +12,8 @@
     "test": "NODE_ENV=test npx jest --runInBand --verbose --detectOpenHandles --testRegex",
     "seed:up": "npx sequelize-cli db:seed:all",
     "seed:down": "npx sequelize-cli db:seed:undo:all",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "start:pm2": "pm2 start ecosystem.config.js"
   },
   "keywords": [],
   "author": "",
