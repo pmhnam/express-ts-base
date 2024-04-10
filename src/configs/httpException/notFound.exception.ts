@@ -1,4 +1,4 @@
-import { IOptionsLoggerDto } from '../logger';
+import { IOptionsLoggerDto } from '@configs/logger';
 import { HTTPException } from './httpException';
 
 export class NotFoundHTTP extends HTTPException {

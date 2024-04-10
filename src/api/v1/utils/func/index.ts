@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import logger from '@src/configs/logger';
-import sgMail from '@src/configs/sendgrid';
+import logger from '@configs/logger';
+import sgMail from '@configs/sendgrid';
 import { config } from 'dotenv';
 import otpGenerator from 'otp-generator';
 

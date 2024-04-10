@@ -1,4 +1,4 @@
-import { ACCOUNT_STATUS } from '@src/api/v1/utils/constants/enum';
+import { ACCOUNT_STATUS } from '@utilsV1/constants/enum';
 
 export interface IUpdateUserDto {
   username?: string;

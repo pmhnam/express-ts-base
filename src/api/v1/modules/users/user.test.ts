@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { describe, expect, test } from '@jest/globals';
 import { Transaction } from 'sequelize';
-import sequelize from '@src/configs/database/sequelize';
-import authService from '../auth/auth.service';
+import sequelize from '@configs/database/sequelize';
+import authService from '@modulesV1/auth/auth.service';
+import { ACCOUNT_STATUS } from '@utilsV1/constants/enum';
 import userService from './user.service';
-import { ACCOUNT_STATUS } from '../../utils/constants/enum';
 
 async function createSeedUsers(transaction: Transaction, length = 10) {
   const users = Array.from({ length }).map((_, index) => {

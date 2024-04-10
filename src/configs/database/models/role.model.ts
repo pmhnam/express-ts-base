@@ -1,5 +1,5 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
-import { db } from '../index';
+import { db } from '@database';
 
 export interface IRoleModel
   extends Model<InferAttributes<IRoleModel, { omit: 'createdAt' | 'updatedAt' }>, InferCreationAttributes<IRoleModel>> {

@@ -1,6 +1,6 @@
 import io from '@configs/socket.io';
-import app from './configs/express';
-import { syncDatabase } from './configs/database/sequelize';
+import app from '@express';
+import { syncDatabase } from '@database/sequelize';
 
 const server = app.listen(3000, async () => {
   console.log('Server running on port 3000');

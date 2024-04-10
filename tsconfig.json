@@ -7,12 +7,15 @@
     "paths": {
       "@src/*": ["src/*"],
       "@configs/*": ["src/configs/*"],
-      "@database": ["src/database"],
-      "@models": ["src/models"],
-      "@models/*": ["src/models/*"],
+      "@database": ["src/configs/database"],
+      "@database/*": ["src/configs/database/*"],
+      "@models": ["src/configs/database/models"],
+      "@models/*": ["src/configs/database/models/*"],
       "@express": ["src/configs/express"],
-      "@aws": ["src/configs/aws"],
       "@apiV1/*": ["src/api/v1/*"],
+      "@modulesV1/*": ["src/api/v1/modules/*"],
+      "@utilsV1/*": ["src/api/v1/utils/*"],
+      "@coreModuleV1/*": ["src/api/v1/core/*"],
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     "rootDirs": ["src"], /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": ["src/configs/types"] /* Specify multiple folders that act like './node_modules/@types'. */,
@@ -27,7 +30,14 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "lib": ["es2022", "dom", "dom.iterable"] /* Specify library files to be included in the compilation. */,
   },
-  "include": ["src/**/*.ts", "src/configs/database/config.sequelize.js"],
+  "include": ["./src/**/*.ts", "./src/configs/database/config.sequelize.js"],
   "exclude": ["node_modules", "dist"],
-  "ts-node": { "require": ["tsconfig-paths/register"] }
+  "ts-node": { 
+      "require": ["tsconfig-paths/register"],
+      "transpileOnly": true,
+      "files": true,
+      "compilerOptions": {
+        "rootDir": "."
+      }
+    }
 }

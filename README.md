@@ -44,6 +44,12 @@ npm start
 npm run test
 ```
 
+### Deployment
+
+```
+npm run start:pm2
+```
+
 ## Features
 
 - Handler return error ✔️

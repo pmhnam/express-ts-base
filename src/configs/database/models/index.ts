@@ -1,5 +1,5 @@
-import { RoleModel } from './role.model';
-import { UserModel } from './user.model';
+import { RoleModel } from '@models/role.model';
+import { UserModel } from '@models/user.model';
 
 (async () => {
   UserModel.belongsTo(RoleModel, { as: 'role' });

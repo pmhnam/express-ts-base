@@ -6,11 +6,15 @@ module.exports = {
   moduleNameMapper: {
     "^@src/(.*)$": "<rootDir>/src/$1",
     "^@configs/(.*)$": "<rootDir>/src/configs/$1",
-    "^@database$": "<rootDir>/src/database",
-    "^@models/(.*)$": "<rootDir>/src/models/$1",
+    "^@database$": "<rootDir>/src/configs/database",
+    "^@database/(.*)$": "<rootDir>/src/configs/database/$1",
+    "^@models$": "<rootDir>/src/configs/database/models",
+    "^@models/(.*)$": "<rootDir>/src/configs/database/models/$1",
     "^@express$": "<rootDir>/src/configs/express",
-    "^@aws$": "<rootDir>/src/configs/aws",
-    "^@apiV1/(.*)$": "<rootDir>/src/api/v1/$1"
+    "^@apiV1/(.*)$": "<rootDir>/src/api/v1/$1",
+    "^@modulesV1/(.*)$": "<rootDir>/src/api/v1/modules/$1",
+    "^@utilsV1/(.*)$": "<rootDir>/src/api/v1/utils/$1",
+    "^@coreModuleV1/(.*)$": "<rootDir>/src/api/v1/core/$1",
   },
   setupFilesAfterEnv: ['<rootDir>/test/jest.setup.ts'],
 };

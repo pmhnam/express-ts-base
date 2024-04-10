@@ -1,20 +1,20 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-useless-constructor */
-import { ICoreQueryParams } from '@src/api/v1/utils/constants/interface';
-import { BadRequestHTTP, InternalServerHTTP, NotFoundHTTP } from '@src/configs/httpException';
+import { ICoreQueryParams } from '@utilsV1/constants/interface';
+import { BadRequestHTTP, InternalServerHTTP, NotFoundHTTP } from '@configs/httpException';
 import bcrypt from 'bcryptjs';
 import moment from 'moment';
-import { i18nKey } from '@src/configs/i18n/init.i18n';
-import { IUserModel } from '@src/configs/database/models/user.model';
+import { i18nKey } from '@configs/i18n/init.i18n';
+import { IUserModel } from '@models/user.model';
 import { Op, Transaction } from 'sequelize';
-import { RoleModel, UserModel } from '@src/configs/database/models';
-import { ACCOUNT_STATUS, ROLE_CODES } from '@src/api/v1/utils/constants/enum';
-import jwt from '@src/configs/jwt';
-import { generateOTP } from '@src/api/v1/utils/func';
+import { RoleModel, UserModel } from '@models';
+import { ACCOUNT_STATUS, ROLE_CODES } from '@utilsV1/constants/enum';
+import jwt from '@configs/jwt';
+import { generateOTP } from '@utilsV1/func';
 import _ from 'lodash';
+import CoreService from '@coreModuleV1/core.service';
 import { ICreateUserDto, IForgotPasswordDto, ILoginDto, IVerifyEmailDto } from './auth.interface';
-import CoreService from '../../core/core.service';
 
 class AuthService extends CoreService {
   private readonly userModel = UserModel;

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ValidationError } from 'express-validation';
-import { HTTPException } from '../httpException';
+import { HTTPException } from '@configs/httpException';
 import { i18nKey } from '../i18n/init.i18n';
 import logger from '../logger';
 

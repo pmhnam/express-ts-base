@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { IJwtPayload } from '@src/configs/jwt';
+import { IJwtPayload } from '@configs/jwt';
+import { CoreController } from '@coreModuleV1/core.controller';
 import userService from './user.service';
-import { CoreController } from '../../core/core.controller';
 
 export class UserController extends CoreController {
   private readonly userService = userService;

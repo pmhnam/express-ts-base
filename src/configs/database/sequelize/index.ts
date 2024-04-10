@@ -1,8 +1,8 @@
 import { Options, Sequelize } from 'sequelize';
 import { config } from 'dotenv';
-import { InternalServerHTTP } from '@src/configs/httpException';
-import logger from '@src/configs/logger';
-import { postgresConfig } from './config.postgresql';
+import { InternalServerHTTP } from '@configs/httpException';
+import logger from '@configs/logger';
+import { postgresConfig } from '@database/sequelize/config.postgresql';
 
 config();
 

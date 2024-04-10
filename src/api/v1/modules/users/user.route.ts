@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { validate } from 'express-validation';
 
-import { jwtAuth } from '@src/configs/middlewares/passport.middleware';
-import { auth, auth4Admin } from '@src/configs/middlewares/authorization.middleware';
+import { jwtAuth } from '@configs/middlewares/passport.middleware';
+import { auth, auth4Admin } from '@configs/middlewares/authorization.middleware';
 import { UserController } from './user.controller';
 import { getUserByIdDto, getUsersValidatorDto, putUserByIdDto } from './user.validate';
 

@@ -1,4 +1,4 @@
-import { IOptionsLoggerDto } from '../logger';
+import { IOptionsLoggerDto } from '@configs/logger';
 
 export class HTTPException extends Error {
   public statusCode: number;

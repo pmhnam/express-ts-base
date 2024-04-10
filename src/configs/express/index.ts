@@ -4,17 +4,17 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import path from 'path';
-import routerV1 from '@apiV1/modules/index';
+import routerV1 from '@modulesV1/index';
 import { corsOptions } from '@configs/cors';
 import { config } from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
-import { NODE_ENV } from '@src/api/v1/utils/constants/enum';
+import { NODE_ENV } from '@utilsV1/constants/enum';
 import apiDocs from '@configs/swagger/index';
-import ResponseHandler from '../middlewares/response.middleware';
-import { errorHandler, notFoundHandler } from '../middlewares/error.middleware';
-import { apiLimiter } from '../rateLimit';
-import { accessLogsMiddleware } from '../middlewares/morgan.middleware';
-import i18nMiddleware from '../i18n';
+import ResponseHandler from '@configs/middlewares/response.middleware';
+import { errorHandler, notFoundHandler } from '@configs/middlewares/error.middleware';
+import { apiLimiter } from '@configs/rateLimit';
+import { accessLogsMiddleware } from '@configs/middlewares/morgan.middleware';
+import i18nMiddleware from '@configs/i18n';
 
 config();
 

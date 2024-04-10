@@ -1,6 +1,6 @@
 import { Joi } from 'express-validation';
-import { coreQueryDto } from '../../core/core.validate';
-import { ACCOUNT_STATUS } from '../../utils/constants/enum';
+import { coreQueryDto } from '@coreModuleV1/core.validate';
+import { ACCOUNT_STATUS } from '@utilsV1/constants/enum';
 
 export const joiUser = {
   id: Joi.string(),

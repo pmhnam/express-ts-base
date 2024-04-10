@@ -1,11 +1,11 @@
-import { ICoreQueryParams } from '@src/api/v1/utils/constants/interface';
+import { ICoreQueryParams } from '@utilsV1/constants/interface';
 import { Request } from 'express';
 import { Op, Transaction } from 'sequelize';
-import { NotFoundHTTP } from '@src/configs/httpException';
-import { i18nKey } from '@src/configs/i18n/init.i18n';
-import { RoleModel, UserModel } from '@src/configs/database/models';
+import { NotFoundHTTP } from '@configs/httpException';
+import { i18nKey } from '@configs/i18n/init.i18n';
+import { RoleModel, UserModel } from '@configs/database/models';
+import CoreService from '@coreModuleV1/core.service';
 import { IUpdateUserDto } from './user.interface';
-import CoreService from '../../core/core.service';
 
 class UserService extends CoreService {
   private readonly userModel;

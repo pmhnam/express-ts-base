@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable class-methods-use-this */
 import { Model, ModelStatic, Op } from 'sequelize';
-import { db } from '@src/configs/database';
+import { db } from '@database';
 import {
   ICoreDto,
   IGetEmbedQueryDto,
@@ -11,8 +11,8 @@ import {
   IGetSortQueryDto,
   IMetadata,
   ICoreQueryParams,
-} from '@src/api/v1/utils/constants/interface';
-import { QUERY_PREFIX } from '../utils/constants/enum';
+} from '@utilsV1/constants/interface';
+import { QUERY_PREFIX } from '@utilsV1/constants/enum';
 
 interface IQueryInclude {
   model: ModelStatic<Model<any, any>>;

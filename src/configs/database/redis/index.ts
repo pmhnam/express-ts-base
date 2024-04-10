@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 import { config } from 'dotenv';
-import logger from '../../logger';
+import logger from '@configs/logger';
 
 config();
 

@@ -2,12 +2,12 @@ import { Server as SKServer } from 'socket.io';
 import { Server } from 'http';
 import { ExtendedError } from 'socket.io/dist/namespace';
 import { config } from 'dotenv';
-import { IDisconnectDto, ISocket } from './index.interface';
-import { corsOptions } from '../cors';
-import { UnauthorizedHTTP } from '../httpException';
-import logger from '../logger';
-import redis from '../database/redis';
-import jwt from '../jwt';
+import logger from '@configs/logger';
+import { UnauthorizedHTTP } from '@configs/httpException';
+import { IDisconnectDto, ISocket } from '@configs/socket.io/index.interface';
+import { corsOptions } from '@configs/cors';
+import redis from '@database/redis';
+import jwt from '@configs/jwt';
 
 config();
 

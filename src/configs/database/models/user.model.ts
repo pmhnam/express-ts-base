@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
-import { ACCOUNT_STATUS } from '@src/api/v1/utils/constants/enum';
+import { ACCOUNT_STATUS } from '@utilsV1/constants/enum';
 import bcrypt from 'bcryptjs';
-import { db } from '../index';
-import { IRoleModel } from './role.model';
+import { db } from '@database';
+import { IRoleModel } from '@models/role.model';
 
 export interface IUserModel
   extends Model<InferAttributes<IUserModel, { omit: 'createdAt' | 'updatedAt' }>, InferCreationAttributes<IUserModel>> {

@@ -1,5 +1,5 @@
 import morgan from 'morgan';
-import logger from '../logger';
+import logger from '@configs/logger';
 
 export const accessLogsMiddleware = morgan(
   ':remote-addr :method :url :status :res[content-length] - :response-time ms',

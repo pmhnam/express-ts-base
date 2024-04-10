@@ -4,16 +4,16 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
+    "dev": "nodemon src/server.ts",
+    "test": "NODE_ENV=test npx jest ./src --runInBand --verbose --detectOpenHandles --testRegex",
+    "start": "npm run build &&NODE_ENV=production node -r ts-node/register dist/server.js",
+    "start:pm2": "pm2 start ecosystem.config.js",
+    "build": "rm -rf dist && npx tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" --fix",
-    "start": "npm run build &&NODE_ENV=production node -r ts-node/register dist/server.js",
-    "dev": "nodemon src/server.ts",
-    "build": "rm -rf dist && npx tsc",
-    "test": "NODE_ENV=test npx jest --runInBand --verbose --detectOpenHandles --testRegex",
     "seed:up": "npx sequelize-cli db:seed:all",
     "seed:down": "npx sequelize-cli db:seed:undo:all",
-    "postinstall": "husky install",
-    "start:pm2": "pm2 start ecosystem.config.js"
+    "postinstall": "husky install"
   },
   "keywords": [],
   "author": "",

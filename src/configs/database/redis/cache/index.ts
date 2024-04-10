@@ -1,4 +1,4 @@
-import logger from '@src/configs/logger';
+import logger from '@configs/logger';
 import redis from '..';
 
 // using redisJSON to store cache

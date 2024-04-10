@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from '@src/configs/jwt';
-import { BadRequestHTTP } from '@src/configs/httpException';
-import { i18nKey } from '@src/configs/i18n/init.i18n';
+import jwt from '@configs/jwt';
+import { BadRequestHTTP } from '@configs/httpException';
+import { i18nKey } from '@configs/i18n/init.i18n';
+import { CoreController } from '@coreModuleV1/core.controller';
+import { sendMail } from '@utilsV1/func';
 import authService from './auth.service';
-import { CoreController } from '../../core/core.controller';
-import { sendMail } from '../../utils/func';
 import { IVerifyEmailDto } from './auth.interface';
 
 class AuthController extends CoreController {
