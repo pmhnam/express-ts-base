@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "test": "NODE_ENV=test npx jest ./src --runInBand --verbose --detectOpenHandles --testRegex",
-    "start": "npm run build &&NODE_ENV=production node -r ts-node/register dist/server.js",
+    "start": "NODE_ENV=production node -r ts-node/register dist/server.js",
     "start:pm2": "pm2 start ecosystem.config.js",
     "build": "rm -rf dist && npx tsc",
     "format": "prettier --write \"src/**/*.ts\"",
