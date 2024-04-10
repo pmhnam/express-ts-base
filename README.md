@@ -63,7 +63,9 @@ npm run start:pm2
 - Stripe ✔️
 - I18n ✔️
 - Unit testing ✔️
-- Swagger
+- Swagger ✔️
+- Pm2 ✔️
+- Messages queue
 
 ## Convention
 
@@ -255,15 +257,11 @@ Server will auto deploy when `push` or `pull request` to branch `main`
 PM2 is a daemon process manager that will help you manage and keep your application online.
 
 ```bash
-pm2 start ./dist/main.js --name foody-api
+pm2 start ecosystem.config.js
 ```
 
 ### Restart pm2
 
 ```bash
-pm2 restart foody-api
-```
-
-```
-
+pm2 restart express-ts-codebase
 ```

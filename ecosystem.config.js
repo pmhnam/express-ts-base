@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: "express-ts codebase",
+            name: "express-ts-codebase",
             script: "dist/server.js",
             instances: 1,
             autorestart: true,
