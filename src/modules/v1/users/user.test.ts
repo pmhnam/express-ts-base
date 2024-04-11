@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { describe, expect, test } from '@jest/globals';
 import { Transaction } from 'sequelize';
-import sequelize from '@configs/database/sequelize';
-import authService from '@modulesV1/auth/auth.service';
-import { ACCOUNT_STATUS } from '@utilsV1/constants/enum';
+import sequelize from '@db/sequelize';
+import authService from '@modules/v1/auth/auth.service';
+import { ACCOUNT_STATUS } from '@utils/constants/enum';
 import userService from './user.service';
 
 async function createSeedUsers(transaction: Transaction, length = 10) {

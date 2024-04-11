@@ -147,8 +147,8 @@
             }
         }
     },
-    "/user/me": {
-        "get": {
+    "get": {
+        "/users/me": {
             "tags": [
                 "users"
             ],

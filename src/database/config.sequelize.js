@@ -65,8 +65,9 @@ const sequelizeConfig = {
     logging: process.env.SHOW_QUERY_LOG === 'true',
   },
   test: {
-    dialect: 'sqlite', storage: './database.sqlite3', logging: true
-  }
-
+    dialect: 'sqlite',
+    storage: './database.sqlite3',
+    logging: true,
+  },
 };
 module.exports = sequelizeConfig;

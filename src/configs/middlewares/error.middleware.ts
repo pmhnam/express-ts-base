@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { ValidationError } from 'express-validation';
 import { HTTPException } from '@configs/httpException';
-import { i18nKey } from '../i18n/init.i18n';
-import logger from '../logger';
+import { i18nKey } from '@configs/i18n/init.i18n';
+import logger from '@configs/logger';
 
 export const errorHandler = (err: HTTPException, req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof ValidationError) {

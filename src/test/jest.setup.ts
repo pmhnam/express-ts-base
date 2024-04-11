@@ -1,5 +1,6 @@
-/* eslint-disable global-require */
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-await-in-loop */
@@ -7,11 +8,11 @@ import { afterAll, beforeAll } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
 import { Sequelize } from 'sequelize';
-import { db } from '../src/configs/database';
-import { syncDatabase } from '../src/configs/database/sequelize';
+import { db } from '@db';
+import { syncDatabase } from '@db/sequelize';
 
 async function seedDatabase() {
-  const seedDirectory = path.join(__dirname, '../src/configs/database/seeders');
+  const seedDirectory = path.join(__dirname, '../database/seeders');
   const seedFiles = fs.readdirSync(seedDirectory).filter((file) => file.endsWith('.js'));
   const queryInterface = db.sequelize.getQueryInterface();
 

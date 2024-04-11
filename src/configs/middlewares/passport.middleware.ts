@@ -3,9 +3,9 @@ import passport from 'passport';
 import { config } from 'dotenv';
 import { Request } from 'express';
 import { UnauthorizedHTTP } from '@configs/httpException';
-import { RoleModel, UserModel } from '../database/models';
-import { i18nKey } from '../i18n/init.i18n';
-import { IJwtPayload } from '../jwt';
+import { RoleModel, UserModel } from '@models';
+import { i18nKey } from '@configs/i18n/init.i18n';
+import { IJwtPayload } from '@configs/jwt';
 
 config();
 

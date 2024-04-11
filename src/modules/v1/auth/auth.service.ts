@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-useless-constructor */
-import { ICoreQueryParams } from '@utilsV1/constants/interface';
+import { ICoreQueryParams } from '@utils/constants/interface';
 import { BadRequestHTTP, InternalServerHTTP, NotFoundHTTP } from '@configs/httpException';
 import bcrypt from 'bcryptjs';
 import moment from 'moment';
@@ -9,11 +9,11 @@ import { i18nKey } from '@configs/i18n/init.i18n';
 import { IUserModel } from '@models/user.model';
 import { Op, Transaction } from 'sequelize';
 import { RoleModel, UserModel } from '@models';
-import { ACCOUNT_STATUS, ROLE_CODES } from '@utilsV1/constants/enum';
+import { ACCOUNT_STATUS, ROLE_CODES } from '@utils/constants/enum';
 import jwt from '@configs/jwt';
-import { generateOTP } from '@utilsV1/func';
+import { generateOTP } from '@utils/func';
 import _ from 'lodash';
-import CoreService from '@coreModuleV1/core.service';
+import CoreService from '@modules/v1/core/core.service';
 import { ICreateUserDto, IForgotPasswordDto, ILoginDto, IVerifyEmailDto } from './auth.interface';
 
 class AuthService extends CoreService {

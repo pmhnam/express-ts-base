@@ -1,4 +1,4 @@
-import { getCache, removeCache, setCache } from '@database/redis/cache';
+import { getCache, removeCache, setCache } from '@db/redis/cache';
 import { NextFunction, Request, Response } from 'express';
 
 export abstract class CoreController {

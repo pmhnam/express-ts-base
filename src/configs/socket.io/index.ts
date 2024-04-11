@@ -6,7 +6,7 @@ import logger from '@configs/logger';
 import { UnauthorizedHTTP } from '@configs/httpException';
 import { IDisconnectDto, ISocket } from '@configs/socket.io/index.interface';
 import { corsOptions } from '@configs/cors';
-import redis from '@database/redis';
+import redis from '@db/redis';
 import jwt from '@configs/jwt';
 
 config();

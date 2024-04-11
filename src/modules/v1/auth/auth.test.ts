@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { describe, expect, test } from '@jest/globals';
-import { db } from '@database';
+import { db } from '@db';
 import { i18nKey } from '@configs/i18n/init.i18n';
-import { ACCOUNT_STATUS } from '@utilsV1/constants/enum';
+import { ACCOUNT_STATUS } from '@utils/constants/enum';
 import authService from './auth.service';
 
 describe('AUTH MODULE', () => {

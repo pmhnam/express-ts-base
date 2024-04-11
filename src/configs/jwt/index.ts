@@ -1,9 +1,9 @@
 import { sign, verify, Secret, VerifyOptions } from 'jsonwebtoken';
 import { config } from 'dotenv';
-import { UnauthorizedHTTP } from '@src/configs/httpException';
-import { i18nKey } from '@src/configs/i18n/init.i18n';
-import { setCache } from '@src/configs/database/redis/cache';
-import { IUserModel } from '@src/configs/database/models/user.model';
+import { UnauthorizedHTTP } from '@configs/httpException';
+import { i18nKey } from '@configs/i18n/init.i18n';
+import { setCache } from '@db/redis/cache';
+import { IUserModel } from '@models/user.model';
 
 config();
 

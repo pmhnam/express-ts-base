@@ -2,7 +2,7 @@ import { Options, Sequelize } from 'sequelize';
 import { config } from 'dotenv';
 import { InternalServerHTTP } from '@configs/httpException';
 import logger from '@configs/logger';
-import { postgresConfig } from '@database/sequelize/config.postgresql';
+import { postgresConfig } from '@db/sequelize/config.postgresql';
 
 config();
 

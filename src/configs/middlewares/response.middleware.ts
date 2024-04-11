@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { i18nKey } from '../i18n/init.i18n';
+import { i18nKey } from '@configs/i18n/init.i18n';
 
 export interface CustomSuccess {
   message?: string;

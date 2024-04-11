@@ -1,12 +1,13 @@
-import io from '@configs/socket.io';
 import app from '@express';
-import { syncDatabase } from '@database/sequelize';
+import io from '@configs/socket.io';
+import { syncDatabase } from '@db/sequelize';
 import { config } from 'dotenv';
-
 config();
 
-const server = app.listen(process.env.PORT || 3000, async () => {
-  console.log('Server running on port 3000');
+const PORT = process.env.PORT || 3000;
+
+const server = app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
   await syncDatabase();
 });
 

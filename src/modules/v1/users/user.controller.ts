@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { IJwtPayload } from '@configs/jwt';
-import { CoreController } from '@coreModuleV1/core.controller';
+import { CoreController } from '@modules/v1/core/core.controller';
 import userService from './user.service';
 
 export class UserController extends CoreController {
