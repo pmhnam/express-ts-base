@@ -115,6 +115,12 @@ export const UserModel = db.sequelize.define<IUserModel>(
       type: DataTypes.ENUM(...Object.values(ACCOUNT_STATUS)),
       defaultValue: ACCOUNT_STATUS.INACTIVE,
     },
+    updatedBy: {
+      type: DataTypes.UUID,
+    },
+    deletedBy: {
+      type: DataTypes.UUID,
+    },
 
     fullName: {
       type: DataTypes.VIRTUAL,
