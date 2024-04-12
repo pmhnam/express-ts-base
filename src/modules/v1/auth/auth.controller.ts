@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from '@configs/jwt';
+import jwt, { IJwtPayload } from '@configs/jwt';
 import { BadRequestHTTP } from '@configs/httpException';
 import { i18nKey } from '@configs/i18n/init.i18n';
 import { CoreController } from '@modules/v1/core/core.controller';
@@ -86,6 +86,16 @@ class AuthController extends CoreController {
       const dto = req.query as unknown as IVerifyEmailDto;
       await this.authService.verifyEmail(dto);
       res.status(200).send('Email verified successfully');
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  loginWithGoogle = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = req.user as IJwtPayload;
+      const data = await this.authService.loginWithGoogle(user);
+      res.onSuccess(data);
     } catch (error) {
       next(error);
     }

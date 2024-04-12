@@ -13,9 +13,11 @@ export interface IUserModel
   email: string;
   firstName: string;
   lastName: string;
-  password: string;
+  password: CreationOptional<string>;
   roleId: string;
   fullName?: string;
+
+  picture?: CreationOptional<string>;
 
   emailVerified?: CreationOptional<boolean>;
   countryCode?: CreationOptional<string>;
@@ -80,6 +82,9 @@ export const UserModel = db.sequelize.define<IUserModel>(
     phoneNumberVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    picture: {
+      type: DataTypes.STRING,
     },
     password: {
       type: DataTypes.STRING,
@@ -147,7 +152,7 @@ const hashPassword = async (password: string) => {
 
 // Hash password
 UserModel.beforeCreate(async (user) => {
-  user.password = await hashPassword(user.password);
+  if (user.password) user.password = await hashPassword(user.password);
 });
 UserModel.beforeUpdate(async (user) => {
   if (user.changed('password')) {

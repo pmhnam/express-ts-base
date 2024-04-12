@@ -10,7 +10,7 @@ import { IUserModel } from '@models/user.model';
 import { Op, Transaction } from 'sequelize';
 import { RoleModel, UserModel } from '@models';
 import { ACCOUNT_STATUS, ROLE_CODES } from '@utils/constants/enum';
-import jwt from '@configs/jwt';
+import jwt, { IJwtPayload } from '@configs/jwt';
 import { generateOTP } from '@utils/func';
 import _ from 'lodash';
 import CoreService from '@modules/v1/core/core.service';
@@ -66,6 +66,8 @@ class AuthService extends CoreService {
       'resetPassword',
       'secret2fa',
       'deletedAt',
+      'deletedBy',
+      'updatedBy',
     ]);
 
     return { user: jsonUser, tokens };
@@ -85,6 +87,8 @@ class AuthService extends CoreService {
           'resetPassword',
           'secret2fa',
           'deletedAt',
+          'deletedBy',
+          'updatedBy',
         ],
       },
       include: [
@@ -185,6 +189,47 @@ class AuthService extends CoreService {
     await user.save({ transaction });
 
     return user;
+  }
+
+  async loginWithGoogle(dto: IJwtPayload) {
+    const user = await this.userModel.findOne({
+      where: { email: dto.email },
+      attributes: {
+        exclude: [
+          'otp',
+          'otpExpires',
+          'forgotPasswordCode',
+          'forgotPasswordCodeExpires',
+          'resetPassword',
+          'secret2fa',
+          'deletedAt',
+        ],
+      },
+      include: [
+        {
+          model: this.roleModel,
+          as: 'role',
+          attributes: ['id', 'code', 'name'],
+        },
+      ],
+    });
+    if (!user) throw new NotFoundHTTP(i18nKey.auth.userNotFound);
+
+    const tokens = this.signTokens(user);
+    const jsonUser = _.omit(user.toJSON(), [
+      'password',
+      'otp',
+      'otpExpires',
+      'forgotPasswordCode',
+      'forgotPasswordCodeExpires',
+      'resetPassword',
+      'secret2fa',
+      'deletedAt',
+      'deletedBy',
+      'updatedBy',
+    ]);
+
+    return { user: jsonUser, tokens };
   }
 
   // #region private methods
